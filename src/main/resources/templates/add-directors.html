@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <meta charset="UTF-8">
+  <title>Add Films</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+<h1>Add Directors</h1>
+
+<form th:action="@{'/directors/add'}" method="post">
+  <label for="name">Name:</label><br>
+  <input type="text" id="name" name="directorName" required><br>
+
+  <label for="img">Image:</label><br>
+  <input type="text" id="img" name="directorImg" required><br>
+
+  <label for="birthdate">Birthdate:</label><br>
+  <input type="date" id="birthdate" name="directorBirthdate" required><br>
+
+  <label for="biography">Biography:</label><br>
+  <textarea id="biography" name="directorBiography" required></textarea><br>
+
+  <input type="submit" value="Add">
+</form>
+
+</body>
+</html>

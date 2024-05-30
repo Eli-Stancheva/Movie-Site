@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <title>Create Watchlist</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
+
+<div class="container">
+  <h1>Create New Watchlist</h1>
+
+  <form th:action="@{/watchlist/create}" method="post" class="mb-4">
+    <div class="form-group">
+      <label for="listName">New Watchlist:</label>
+      <input type="text" id="listName" name="listName" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+  </form>
+
+  <h2>Existing Watchlists</h2>
+  <div class="exist">
+    <div th:each="watchlist : ${userWatchlist}" class="category">
+      <a class="category-name see-more" th:href="@{'/watchlist/' + ${watchlist.id}}" th:text="${watchlist.name}">Watchlist Name</a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

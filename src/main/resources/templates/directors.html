@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head}">
+  <title>Movies</title>
+</head>
+<body>
+
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
+
+<div class="container">
+  <br><h1>Directors</h1><br>
+
+  <div th:each="director : ${directors}" class="actor-container">
+    <div class="actor-info">
+      <div class="actor-img">
+        <img th:src="@{${director.directorImg}}" style="height: 200px; width: 150px; border-radius: 5px;">
+      </div>
+      <div class="actor-details">
+        <h2 class="actor-name"><strong><a class="text-decoration-none text-white" th:text="${director.directorName}"></a></strong></h2>
+        <h4 th:text="${director.directorBirthdate}"></h4>
+        <a class="see-more-button" th:href="@{'/directors/' + ${director.id}}">See More</a>
+      </div>
+    </div>
+    <hr>
+  </div>
+</div>
+
+<div>
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head}">
+  <title>Movies</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<div class="container">
+  <div class="centered-text text-center">
+    <h1 th:if="${#lists.isEmpty(movieResults) && #lists.isEmpty(seriesResults)}">Opsss...Nothing found</h1>
+    <p th:if="${#lists.isEmpty(movieResults) && #lists.isEmpty(seriesResults)}">Enter a valid name to find Movies and TV series.</p>
+  </div>
+</div>
+<!--<div>-->
+<!--  <footer th:replace="~{fragments/footer :: footer}"></footer>-->
+<!--</div>-->
+</body>
+</html>

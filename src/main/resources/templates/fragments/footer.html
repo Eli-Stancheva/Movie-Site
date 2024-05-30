@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>MovieDB</title>
+</head>
+
+<body>
+
+<footer class="footer bg-custom-color rounded-0" th:fragment="footer">
+    <div class="text-center">
+        <div class="h5 text-white">
+            &copy; <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy')}">2024</span> Elitsa Stancheva - Spring Project. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+</body>
+
+</html>

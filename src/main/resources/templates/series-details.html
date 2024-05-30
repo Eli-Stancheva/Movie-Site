@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head}">
+
+  <title>Movie</title>
+</head>
+<body>
+
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
+
+<div class="container">
+  <div class="blur-background" th:style="'background-image: url(' + ${seriesById.imageURL} + ')'"></div>
+  <div class="movie-info ">
+    <h1 th:text="${seriesById.title}"></h1>
+
+    <div class="movie-content">
+      <div class="movie-img">
+        <img th:src="@{${seriesById.imageURL}}" style="height: 400px; width: 300px; ">
+      </div>
+      <div class="movie-video">
+        <iframe width="700" height="400" th:src="@{'https://www.youtube.com/embed/' + ${seriesById.videoURL}}" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <div class="categories-container">
+    <div th:each="c : ${seriesById.category}">
+      <h4>
+        <a class="button-6" th:href="@{'/categories/' + ${c.id}}" th:text="${c.categoryName}"></a>
+        <div th:if="${@currentUser.isAdmin()}">
+          <form th:action="@{'/series/remove-category/' + ${seriesById.id} + '/' + ${c.id}}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </h4>
+    </div>
+  </div>
+
+    <p>Year:
+      <a th:href="@{'/movies/year/' + ${releaseYear}}" th:text="${releaseYear}"></a>
+    </p>
+
+    <p>Rating: <span th:text="${seriesById.rating}"></span></p>
+    <p>Director:
+      <a th:href="@{'/directors/' + ${seriesById.getDirector().id}}" th:text="${seriesById.getDirector().directorName}"></a>
+    </p>
+    <p>Actors: </p>
+    <div th:each="a : ${seriesById.actors}">
+      <h4>
+      <a th:href="@{'/actors/' + ${a.id}}" th:text="${a.actorName}"></a>
+        <div th:if="${@currentUser.isAdmin()}">
+          <form th:action="@{'/series/remove-actor/' + ${seriesById.id} + '/' + ${a.id}}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </h4>
+    </div>
+
+    <p th:text="${seriesById.description}"></p>
+
+    <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and averageRating != null and averageRating != 0.0}">
+      Average Rating: <span th:text="${averageRating}"></span>
+    </p>
+
+    <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and userRating != null and userRating != 0}">
+      Your Rating: <span th:text="${userRating}"></span>
+    </p>
+
+    <button type="button" class="see-more-button" th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#ratingModal">Rate</button>
+    <a th:href="@{/users/login}" class="see-more-button" th:unless="${@currentUser.isLogged()}">Rate</a>
+
+    <form th:action="@{'/series/add/' + ${seriesById.id}}" method="post" th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}">
+      <button type="submit" class="see-more-button">Add to Series Watchlist</button>
+    </form>
+
+    <form action="/users/login" method="get" th:unless="${@currentUser.isLogged()}">
+      <button type="submit" class="see-more-button">Add to Series Watchlist</button>
+    </form>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+    <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
+    <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addActorModal">Add Actors</button>
+    <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+</div>
+</div>
+
+
+<div class="container">
+  <div th:if="${not #lists.isEmpty(similarSeries)}">
+    <h2>Similar Movies</h2>
+    <div class="row">
+      <div class="col-md-2 mb-4" th:each="s : ${similarSeries}">
+        <div class="card">
+          <a th:href="@{'/series/' + ${s.id}}">
+            <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+          </a>
+          <div class="card-body">
+            <p class="card-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+              </svg>
+              <span class="rating-text" th:text="${s.rating}"></span>
+            </p>
+            <h5 class="card-title" th:text="${s.title}"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="ratingModalLabel">Rate Movie</h5>
+      </div>
+      <div class="modal-body">
+        <div class="rating-container">
+          <form id="rating-form" th:action="@{'/series/rateSeries/' + ${seriesById.id}}" method="post">
+            <input type="radio" id="rating-1" name="rating" value="1">
+            <label for="rating-1">1</label>
+
+            <input type="radio" id="rating-2" name="rating" value="2">
+            <label for="rating-2">2</label>
+
+            <input type="radio" id="rating-3" name="rating" value="3">
+            <label for="rating-3">3</label>
+
+            <input type="radio" id="rating-4" name="rating" value="4">
+            <label for="rating-4">4</label>
+
+            <input type="radio" id="rating-5" name="rating" value="5">
+            <label for="rating-5">5</label>
+
+            <input type="radio" id="rating-6" name="rating" value="6">
+            <label for="rating-6">6</label>
+
+            <input type="radio" id="rating-7" name="rating" value="7">
+            <label for="rating-7">7</label>
+
+            <input type="radio" id="rating-8" name="rating" value="8">
+            <label for="rating-8">8</label>
+
+            <input type="radio" id="rating-9" name="rating" value="9">
+            <label for="rating-9">9</label>
+
+            <input type="radio" id="rating-10" name="rating" value="10">
+            <label for="rating-10">10</label>
+
+            <button type="submit" class="btn text-white">Rate</button>
+          </form>
+
+<!--          <form id="delete-rating-form" th:action="@{'/series/delete-series-rating/' + ${seriesById.id}}" method="post">-->
+<!--            <button type="submit" class="btn text-white">Delete Rating</button>-->
+<!--          </form>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Series Information</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{'/series/update'  + ${seriesById.id} }" method="post">
+          <input type="hidden" id="id" name="id" th:value="${seriesById.id}">
+
+          <label for="title">Title:</label><br>
+          <input type="text" id="title" name="title" th:value="${seriesById.title}"><br>
+
+          <label for="releaseDate">Release Date:</label><br>
+          <input type="date" id="releaseDate" name="releaseDate" th:value="${seriesById.releaseDate}"><br>
+
+          <label for="releaseDate">Seasons:</label><br>
+          <input type="text" id="seasons" name="seasons" th:value="${seriesById.seasons}"><br>
+
+          <label for="rating">Rating:</label><br>
+          <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" th:value="${seriesById.rating}"><br>
+
+          <label for="imageURL">Image URL:</label><br>
+          <input type="text" id="imageURL" name="imageURL" th:value="${seriesById.imageURL}"><br>
+
+          <label for="videoURL">Video URL:</label><br>
+          <input type="text" id="videoURL" name="videoURL" th:value="${seriesById.videoURL}"><br>
+
+          <label for="description">Description:</label><br>
+          <textarea id="description" name="description" th:text="${seriesById.description}"></textarea><br>
+
+          <label for="director">Director: </label>-->
+          <select id="director" name="directorId" class="form-control" required>
+            <option th:each="director : ${allDirectors}" th:value="${director.id}"
+                    th:text="${director.directorName}"
+                    th:selected="${director.id} == ${seriesById.director.id}">
+            </option>
+          </select>
+          <input type="submit" value="Update">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addActorModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Actors</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{/series/add-actors}" method="post">
+          <label for="actorName">Actor Name</label>
+          <input type="text" class="form-control" id="actorName" name="actorName" required>
+
+          <input type="hidden" th:value="${seriesById.id}" name="seriesId">
+
+          <input type="submit" value="Add Actor">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="addCategoryModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Category</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{/series/add-category}" method="post">
+          <label for="categoryName">Category</label>
+          <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+
+          <input type="hidden" th:value="${seriesById.id}" name="movieId">
+
+          <input type="submit" value="Add Category">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>

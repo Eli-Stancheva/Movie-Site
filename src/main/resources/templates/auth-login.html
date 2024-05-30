@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="fragments/main-layout">
+
+<head th:replace="~{fragments/head :: head}">
+  <title>MovieDB</title>
+</head>
+
+<body>
+<div>
+  <nav th:replace="~{fragments/navigation :: navigation}"></nav>
+</div>
+  <div class="login-container">
+  <h2 class="text-center text-black mt-3">Login</h2>
+
+  <form method="POST" th:action="@{/users/login}" th:object="${userLoginDTO}"
+        class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center">
+    <div class="form-group">
+      <label for="email" class="text-black font-weight-bold"></label>
+      <input value="email" id="email" name="email" type="email" class="form-control"
+             th:field="*{email}"
+             placeholder="Email"/>
+    </div>
+    <div class="form-group">
+      <label for="password" class="text-black font-weight-bold"></label>
+      <input value="password" id="password" name="password" type="password" class="form-control"
+             th:field="*{password}"
+             placeholder="Password"/>
+    </div>
+    <p th:if="${badCredentials}" class="error">
+      Invalid email or password.
+    </p>
+
+    <div class="row">
+      <div class="col col-md-4">
+        <div class="button-holder d-flex">
+          <input type="submit" class="submit-btn" value="Submit"/>
+        </div>
+      </div>
+        <div class="col d-flex">
+            <div class="register" style="margin-bottom: 10px;">
+                <a type="button" th:href="@{/users/register}" class="register-btn">Register</a>
+            </div>
+            <div class="forgot-password">
+                <a type="button" th:href="@{/users/reset-password}" class="forgot-btn text-center">Forgot Password</a>
+            </div>
+        </div>
+
+    </div>
+
+  </form>
+</div>
+</body>
+</html>

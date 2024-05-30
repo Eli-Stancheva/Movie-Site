@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <title>User Profile</title>
+</head>
+<body>
+
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
+
+<div class="jumbotron">
+  <h1 class="display-4">User Profile</h1>
+
+
+  <div th:if="${successMessage}">
+    <div class="alert alert-success" role="alert">
+      <span th:text="${successMessage}"></span>
+    </div>
+  </div>
+
+
+  <div class="jumbotron">
+    <div class="card">
+      <div class="card-header">
+        <h2>Edit Profile:</h2>
+      </div>
+      <div class="card-body">
+        <form method="post" th:action="@{/profile/update}" th:object="${userForm}">
+          <div class="form-group">
+            <label for="username">New Username</label>
+            <input type="text" class="form-control" id="username" name="username" th:value="${userForm.username}" required>
+          </div>
+          <div class="form-group">
+            <label for="email">New Email</label>
+            <input type="email" class="form-control" id="email" name="email" th:value="${userForm.email}" required>
+          </div>
+          <div class="form-group">
+            <label for="password">New Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm New Password</label>
+            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword">
+          </div>
+          <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

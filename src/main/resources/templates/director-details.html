@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head}">
+
+  <title>Movie</title>
+</head>
+<body>
+
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
+
+
+<div class="container" >
+  <div class="actor-img">
+    <img th:src="@{${directorById.directorImg}}" style="height: 400px; width: 300px; ">
+  </div>
+  <h1 th:text="${directorById.directorName}"></h1>
+  <h2>Biography</h2>
+
+  <p th:text="${directorById.directorBirthdate}"></p>
+
+  <p th:text="${directorById.directorBiography}"></p>
+
+  <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
+
+  <div class="container mt-5">
+    <h2>Known For</h2>
+    <div class="row">
+      <div class="col-md-2 mb-4" th:each="movie : ${directorMovies}">
+        <div class="card">
+          <a th:href="@{'/movies/' + ${movie.id}}">
+            <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+          </a>
+          <div class="card-body">
+            <p class="card-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+              </svg>
+              <span class="rating-text" th:text="${movie.rating}"></span>
+            </p>
+            <h5 class="card-title" th:text="${movie.title}"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2 mb-4" th:each="s : ${directorSeries}">
+        <div class="card">
+          <a th:href="@{'/series/' + ${s.id}}">
+            <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+          </a>
+          <div class="card-body">
+            <p class="card-text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+              </svg>
+              <span class="rating-text" th:text="${s.rating}"></span>
+            </p>
+            <h5 class="card-title" th:text="${s.title}"></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Director Information</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{'/directors/update'}" method="post">
+          <input type="hidden" id="id" name="id" th:value="${directorById.id}">
+
+          <label for="directorName">Title:</label><br>
+          <input type="text" id="directorName" name="directorName" th:value="${directorById.directorName}"><br>
+
+          <label for="directorBirthdate">Birthdate:</label><br>
+          <input type="date" id="directorBirthdate" name="directorBirthdate" th:value="${directorById.directorBirthdate}"><br>
+
+          <label for="directorBiography">Biography:</label><br>
+          <textarea id="directorBiography" name="directorBiography" th:text="${directorById.directorBiography}"></textarea><br>
+
+          <label for="directorImg">Actor IMG:</label><br>
+          <input type="text" id="directorImg" name="directorImg" th:value="${directorById.directorImg}"><br>
+
+          <input type="submit" value="Update">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

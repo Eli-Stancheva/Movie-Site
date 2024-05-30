@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head}">
+  <title>Your Watchlist</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+
+<div class="container">
+    <br><h1>Your Movie Watchlist</h1><br>
+
+    <div th:if="${watchlistMovies.isEmpty()}" class="alert alert-info" role="alert">
+        <p>No movies added to the movie watchlist yet.</p>
+    </div>
+
+    <div class="media-list">
+        <ul>
+            <li th:each="movie : ${watchlistMovies}">
+                <div class="m-info">
+                    <img th:src="@{${movie.imageURL}}" alt="Movie Image">
+                    <div class="movie-description">
+                        <a th:href="@{'/movies/' + ${movie.id}}" class="text-decoration-none text-white">
+                            <h3 class="m-0" th:text="${movie.title}"></h3>
+                        </a><br>
+                        <form th:action="@{'/movies/delete-watchlist-movie/' + ${movie.id}}" method="post">
+                            <button class="see-more-button" type="submit">Remove</button>
+                        </form>
+                    </div>
+                </div><br>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<!--<div>-->
+<!--  <footer th:replace="~{fragments/footer :: footer}"></footer>-->
+<!--</div>-->
+
+</body>
+</html>

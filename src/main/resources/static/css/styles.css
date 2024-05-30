@@ -1,0 +1,580 @@
+.bg-custom-color{
+    background-color: black;
+    position: relative;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: #ffffff;
+    padding: 14px;
+    text-align: center;
+}
+
+body{
+    background-image: linear-gradient(45deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(112.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(67.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(90deg, rgb(24, 15, 143),rgb(170, 57, 157)); background-blend-mode:overlay,overlay,overlay,normal;
+    color: white;
+    font-family: Georgia, fantasy;
+}
+
+textarea {
+    border-radius: 10px; /* Задаване на радиус на заобляне */
+    padding: 10px; /* Добавяне на вътрешно запълване за по-добър външен вид */
+}
+
+.navbar{
+    background-color: #bababa;
+    border-color: white;
+}
+
+.navbar-brand{
+    margin-left: 20px;
+}
+.nav-link{
+    margin-right: 20px;
+}
+.search-form {
+    height: 40px;
+    display: flex;
+    border: 2px #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 650px;
+    margin-right: 10px;
+}
+
+.search-input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    outline: none;
+}
+
+.search-button {
+    background-color: white; /* Променете цвета на бутона според вашите предпочитания */
+    color: grey;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-button:hover {
+    background-color: grey; /* Променете цвета на бутона при ховър според вашите предпочитания */
+    color: white;
+}
+
+.search-admin-form {
+    height: 40px;
+    display: flex;
+    border: 2px #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 500px;
+    margin-right: 10px;
+}
+
+.search-admin-input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 2px;
+    outline: none;
+}
+
+.search-admin-button {
+    background-color: white;
+    color: grey;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-admin-button:hover {
+    background-color: lightgray;
+}
+
+.card {
+    height: 95%;
+}
+
+.card-img-top {
+    width: 100%; /* Задава широчината на изображението на 100% от родителския елемент */
+    height: 250px;  /* Позволява на изображението да запази своето съотношение на страници */
+}
+
+.card-title {
+    font-size: 16px; /* Задава размер на шрифта от 18 пиксела */
+}
+
+.card-text {
+    font-size: 14px; /* Задава размер на шрифта от 18 пиксела */
+}
+
+.transparent-btn {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.transparent-btn:hover,
+.transparent-btn:focus {
+    background-color: #ccc; /* Сив цвят за ховър и фокус */
+    border-color: #ccc;
+}
+
+.rating-container {
+    display: flex;
+}
+
+
+
+.modal-content {
+    background-color: #1a1e24; /* Светло сив цвят на фона */
+    border-radius: 5px; /* Закръгленост на ъглите */
+}
+
+.btn-secondary {
+    padding: 5px 10px; /* По-малко вътрешно запълване */
+    font-size: 14px; /* Размер на шрифта */
+    text-align: center; /* Центриране на текста */
+}
+
+
+/* Стилизация на бутона */
+button.close {
+    background-color: #1a1e24;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+
+/* Стилизация на иконата на бутона */
+button.close span {
+    color: #fff; /* Заменете #fff с желания от вас цвят на иконата */
+    font-size: 20px; /* Задава размер на шрифта на иконата */
+    line-height: 20px; /* Задава височина на реда, за да центрира иконата */
+}
+
+.rating-container{
+    margin-left: 55px;
+    margin-bottom: 10px;
+}
+
+.btn.btn-secondary{
+    line-height: 15px;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+.see-more {
+    margin-top: -15px;
+    margin-left: 15px;
+}
+
+.movie-content {
+    display: flex; /* За да направите елементите на ред */
+    align-items: flex-start; /* За вертикално подравняване в началото */
+}
+
+.movie-img,
+.movie-video {
+    margin-left: 5px;
+    max-height: 400px; /* Максимална височина за еднаква височина */
+    overflow: hidden; /* За да скриете излишната част от снимката и видеоклипа */
+}
+
+.movie-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Поставете зад фона на всички останали елементи */
+    background-size: cover;
+    filter: blur(10px); /* Добавете размазване на фона */
+    opacity: 0; /* Начална прозрачност */
+    transition: opacity 0.5s ease; /* Анимация за плавно появяване/изчезване */
+}
+
+.movie-content {
+    position: relative;
+    z-index: 1; /* Поставете съдържанието над фона */
+    /* Други стилове на вашето съдържание */
+}
+
+.movie-background.active {
+    opacity: 1; /* Покажете фона при активиране */
+}
+
+.blur-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(40px); /* Можете да промените стойността на размазване според вашите предпочитания */
+    opacity: 0.5;
+
+}
+
+.movie-info {
+    position: relative;
+    z-index: 1;
+}
+
+.centered-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.media-list ul {
+    list-style-type: none; /* Премахва точките от списъка */
+    padding: 0;
+    margin: 0;
+}
+
+.media-list li {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.media-list li:last-child {
+    border-bottom: none; /* Премахва границата от последния елемент */
+}
+
+.media-list li img {
+    margin-right: 10px;
+    width: 100px; /* Променете размера на снимката според нуждите */
+    height: auto;
+    border-radius: 5px; /* Заоблен край на снимката */
+}
+
+.movie-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.m-info {
+    display: flex;
+    align-items: flex-start; /* Центрира елементите вертикално отгоре */
+}
+
+.m-info img {
+    margin-right: 10px; /* Разстояние между снимката и описанието */
+}
+
+.m-info .movie-description {
+    margin-top: 0; /* Изчиства възможно добавен горен мардж */
+}
+
+.dropdown-menu-right {
+    right: 0;
+    left: auto;
+}
+
+.custom-link {
+    text-decoration: none;
+    color: black;
+}
+
+.custom-link:hover {
+    text-decoration: none;
+}
+
+.see-more-button {
+    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+    border: 0;
+    border-radius: 12px;
+    color: #FFFFFF;
+    cursor: pointer;
+    display: inline-block;
+    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 2.5;
+    outline: transparent;
+    padding: 0 1rem;
+    text-align: center;
+    text-decoration: none;
+    transition: box-shadow .2s ease-in-out;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+}
+
+.see-more-button:not([disabled]):focus {
+    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+
+.see-more-button:not([disabled]):hover {
+    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+
+.actor-info {
+    display: flex;
+    align-items: center;
+}
+
+.actor-img {
+    margin-right: 20px;
+}
+
+.actor-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.actor-name {
+    margin-bottom: 5px;
+}
+
+.login-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 600px;
+    height: 400px;
+    margin: 50px 50px 50px 350px;
+    background-color: lightgray;
+}
+
+.main-form {
+    background-color: transparent;
+    border: none;
+}
+.submit-btn {
+    border: 1px solid #273746;
+    background-color: white;
+    border-radius: 50px;
+    margin-top: 20px;
+    width: 500px;
+    padding: 6px 172px;
+}
+
+.submit-btn:hover{
+    background-color: #273746;
+    border:none;
+    color: white;
+}
+
+.form-control{
+    border-radius: 50px;
+}
+
+.register-btn,
+.forgot-btn {
+    text-decoration: none;
+    font-size: 18px;
+    color: grey;
+    margin-right: 30px;
+    margin-left: 55px;
+}
+
+.register-btn:hover,
+.forgot-btn:hover{
+    color: #273746;
+}
+
+.register,
+.forgot-password{
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.error{
+    color: red;
+    margin-left: 12px;
+}
+
+.register-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 600px;
+    height: 520px;
+    margin: 50px 50px 50px 350px;
+    background-color: lightgray;
+}
+
+.form-property{
+    width: 100%;
+    margin-bottom: -20px;
+}
+
+.alert-different-pass{
+    color: red;
+    margin-left: 12px;
+}
+
+.forgot-pass-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid grey;
+    border-radius: 10px;
+    width: 600px;
+    height: 300px;
+    margin: 50px 50px 50px 350px;
+    background-color: lightgray;
+}
+
+.forgot-pass-email{
+    border: 1px solid #8080805c;
+    padding: 6px 6px 6px 12px;
+    border-radius: 50px;
+    width: 100%;
+
+}
+.reset-btn {
+    border: 1px solid #c26236;
+    border-radius: 50px;
+    width: 100%;
+}
+
+.comment-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.comment-wrapper textarea {
+    flex: 1;
+}
+
+.comment-wrapper button {
+    margin-left: 10px;
+}
+
+.container{
+    margin-bottom: 20px;
+}
+
+
+.categories-container {
+    display: flex;
+    flex-wrap: wrap; /* Ако искате бутоните да се прехвърлят на следващ ред при недостиг на място */
+    gap: 10px; /* Разстояние между бутоните */
+}
+
+.button-6 {
+    align-items: center;
+    background-color: transparent;
+    border: 1px solid grey;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: inline-flex;
+    font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 1.25;
+    margin: 0;
+    min-height: 1rem;
+    /*padding: calc(.875rem - 1px) calc(1.5rem - 1px);*/
+    padding: calc(.5rem - 1px) calc(1rem - 1px); /* Намалено padding */
+    position: relative;
+    text-decoration: none;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+}
+
+.button-6:hover,
+.button-6:focus {
+    border-color: lightgray;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+    color: #787878;
+}
+
+.button-6:hover {
+    transform: translateY(-1px);
+}
+
+.button-6:active {
+    background-color: #F0F0F1;
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+    color: rgba(0, 0, 0, 0.65);
+    transform: translateY(0);
+}
+
+
+
+
+.category {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    font: bold 1rem sans-serif;
+    text-transform: uppercase;
+    color: #666666;
+}
+.category-name {
+    padding: 0 .5em .25em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: .3s;
+    color: #666666;
+    text-decoration: none;
+}
+.category-name:hover {
+    color: #fff;
+}
+.category-name:before {
+    content: "";
+    position: absolute;
+    inset: calc(100% - 3px) 0 0 0; /* 3px = the thickness */
+    background: #dc02ef; /* the color */
+    scale: 0 1;
+    transition: .3s, translate 0s .3s;
+}
+.category:hover .category-name:before {
+    scale: 1;
+}
+.category-name:hover:before {
+    translate: 0;
+    transition: .3s;
+}
+.category:hover .category-name:has(~ li:hover):before {
+    translate: 100% 0;
+    transition: .2s .2s,scale 0s .4s;
+}
+.category:hover .category-name:hover ~ .category-name:before {
+    translate: -100% 0;
+    transition: .2s .2s,scale 0s .4s;
+}
+
+
+.exist {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}

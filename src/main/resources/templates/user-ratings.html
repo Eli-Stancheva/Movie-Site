@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <title>Movies</title>
+</head>
+<body>
+<div th:replace="~{fragments/navigation :: navigation}"></div>
+<div class="container">
+  <br><h1>Your Ratings</h1><br>
+    <div class="media-list">
+        <ul>
+            <li th:each="movie : ${userMovieRatings}">
+        <div class="m-info">
+            <div>
+                <img th:src="@{${movie.imageURL}}" style="height: 200px; width: 150px; border-radius: 5px;">
+            </div>
+            <div class="actor-details">
+                <h3 class="m-0" th:text="${movie.title}"></h3>
+                Your Rating: <span th:text="${movie.rating}"></span>
+                <a class="see-more-button" th:href="@{'/movies/' + ${movie.id}}">See More</a>
+                <form id="delete-rating-form-movie" th:action="@{'/movies/delete-rating/' + ${movie.id}}" method="post">
+                    <button type="submit" class="see-more-button">Delete Rating</button>
+                </form>
+            </div>
+        </div><br>
+            </li>
+        </ul>
+    </div>
+    <hr>
+    <div class="media-list">
+        <ul>
+            <li th:each="series : ${userSeriesRatings}">
+                <div class="m-info">
+                    <div>
+                        <img th:src="@{${series.imageURL}}" style="height: 200px; width: 150px; border-radius: 5px;">
+                    </div>
+                    <div class="actor-details">
+                        <h3 class="m-0" th:text="${series.title}"></h3>
+                        <p th:text="${series.rating}">Your Rating:</p>
+                        <a class="see-more-button" th:href="@{'/series/' + ${series.id}}">See More</a>
+                        <form id="delete-rating-form" th:action="@{'/series/delete-series-rating/' + ${series.id}}" method="post">
+                            <button type="submit" class="see-more-button">Delete Rating</button>
+                        </form>
+                    </div>
+                </div><br>
+            </li>
+        </ul>
+    </div>
+    <hr>
+</div>
+<div>
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
+</body>
+</html>
