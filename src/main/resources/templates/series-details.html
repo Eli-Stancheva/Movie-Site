@@ -89,6 +89,9 @@
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addActorModal">Add Actors</button>
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+    <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/series/delete/' + ${seriesById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this TV Series?');">
+      <button type="submit" class="btn btn-danger">Delete TV Series</button>
+    </form>
 </div>
 </div>
 
@@ -175,7 +178,7 @@
         <h5 class="modal-title">Update Series Information</h5>
       </div>
       <div class="modal-body">
-        <form th:action="@{'/series/update'  + ${seriesById.id} }" method="post">
+        <form th:action="@{'/series/update/'  + ${seriesById.id} }" method="post">
           <input type="hidden" id="id" name="id" th:value="${seriesById.id}">
 
           <label for="title">Title:</label><br>
@@ -244,7 +247,7 @@
           <label for="categoryName">Category</label>
           <input type="text" class="form-control" id="categoryName" name="categoryName" required>
 
-          <input type="hidden" th:value="${seriesById.id}" name="movieId">
+          <input type="hidden" th:value="${seriesById.id}" name="seriesId">
 
           <input type="submit" value="Add Category">
         </form>
