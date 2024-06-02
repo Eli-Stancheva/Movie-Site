@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head}">
-  <title>News Details</title>
+    <title>News Details</title>
 </head>
 
 <body>
@@ -19,28 +19,43 @@
     <p th:text="${newsById.date}"></p>
     <p th:text="${newsById.newsContent}"></p>
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
+    <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/news/delete/' + ${newsById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this News?');">
+        <button type="submit" class="btn btn-danger">Delete News</button>
+    </form>
 
-      <h2>Comments</h2>
-      <div th:each="comment : ${commentsForNews}">
+    <h2>Comments</h2>
+    <div th:each="comment : ${commentsForNews}" class="comment-section">
         <h5><strong th:text="${comment.user.username}">Username</strong></h5>
-          <h6 th:text="${comment.postDate}">Comment Date</h6>
-          <p th:text="${comment.comment}">Comment</p>
+        <h6 th:text="${comment.postDate}">Comment Date</h6>
+        <p th:text="${comment.comment}">Comment</p>
 
+        <form th:if="${@currentUser.isLogged() and @currentUser.id == comment.user.id}" th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post">
+            <input type="hidden" name="newsId" th:value="${newsById.id}">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
 
-          <form th:if="${@currentUser.isLogged() and @currentUser.id == comment.user.id}" th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post">
-              <input type="hidden" name="newsId" th:value="${newsById.id}">
-              <button type="submit" class="btn btn-danger">Delete</button>
-          </form>
+        <form th:action="@{'/news/reply/' + ${comment.id}}" method="post" th:if="${@currentUser.isLogged()}">
+            <textarea name="replyContent" rows="2"></textarea>
+            <button type="submit" class="btn btn-primary">Reply</button>
+        </form>
+
+        <div th:each="reply : ${comment.replies}" class="reply-section">
+            <h6><strong th:text="${reply.user.username}">Username</strong></h6>
+            <p th:text="${reply.comment}">Reply</p>
+        </div>
         <hr>
-      </div>
+    </div>
 
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-    <form method="post" th:action="@{'/news/comments/' + ${newsById.id}}" >
-        <div class="comment-wrapper">
-            <textarea id="comment" name="comment" type="text" rows="4" cols="50"></textarea>
-            <button class="see-more-button" type="submit">Send</button>
-        </div>
-    </form>
+
+    <div th:if="${@currentUser.isLogged()} and !${@currentUser.isAdmin()}">
+        <form method="post" th:action="@{'/news/comments/' + ${newsById.id}}">
+            <div class="comment-wrapper comment-section">
+                <textarea id="comment" name="comment" type="text" rows="4" cols="50"></textarea>
+                <button class="see-more-button" type="submit">Send</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
@@ -69,8 +84,7 @@
     </div>
 </div>
 <div>
-  <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 </div>
 </body>
-
 </html>
