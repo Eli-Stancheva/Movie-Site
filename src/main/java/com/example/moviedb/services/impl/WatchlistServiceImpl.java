@@ -40,22 +40,6 @@ public class WatchlistServiceImpl implements WatchlistService {
         return watchlistRepository.save(watchlist);
     }
 
-//    @Override
-//    public void addMovieToWatchlist(Long listId, Long movieId) {
-//        Watchlist watchlist = watchlistRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Watchlist not found"));
-//        Movie movie = movieRepository.findById(movieId).orElseThrow(() -> new EntityNotFoundException("Movie not found"));
-//        watchlist.getMovies().add(movie);
-//        watchlistRepository.save(watchlist);
-//    }
-//
-//    @Override
-//    public void addSeriesToWatchlist(Long listId, Long seriesId) {
-//        Watchlist watchlist = watchlistRepository.findById(listId).orElseThrow(() -> new EntityNotFoundException("Watchlist not found"));
-//        TVSeries series = seriesRepository.findById(seriesId).orElseThrow(() -> new EntityNotFoundException("Series not found"));
-//        watchlist.getSeries().add(series);
-//        watchlistRepository.save(watchlist);
-//    }
-
     @Override
     public List<Watchlist> getUserWatchlist(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new IllegalArgumentException("User not found"));

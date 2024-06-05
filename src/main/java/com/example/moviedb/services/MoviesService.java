@@ -13,6 +13,7 @@ public interface MoviesService {
     List<MovieDTO> getMovies();
     MovieDTO getMovieById(Long id);
     List<MovieDTO> searchMovieIgnoreCase(String query);
+    List<MovieDTO> searchMovieByTitleOrActorOrDirectorOrCategory(String query);
     MovieDTO convertToDto(Movie movie);
     Movie convertDtoToMovie(MovieDTO movieDTO);
     List<MovieDTO> getTopRatedMovies();
@@ -34,4 +35,5 @@ public interface MoviesService {
     void addMovie(String title, LocalDate releaseDate, double rating, String imageURL, String videoURL, String description, Long directorId);
     void removeActorFromMovie(Long movieId, Long actorId);
     void removeCategoryFromMovie(Long movieId, Long categoryId);
+    void deleteMovie(Long id);
 }

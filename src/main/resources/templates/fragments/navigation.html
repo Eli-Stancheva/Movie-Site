@@ -3,6 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <title>MovieDB</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#search-input').on('input', function() {
+                let query = $(this).val();
+                if (query.length > 2) {
+                    $.ajax({
+                        url: '/search/autocomplete',
+                        type: 'GET',
+                        data: {query: query},
+                        success: function(data) {
+                            let suggestions = $('#suggestions');
+                            suggestions.empty();
+                            data.forEach(function(item) {
+                                suggestions.append(`<option value="${item.title}">`);
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
 </head>
 <body>
 
@@ -30,6 +56,12 @@
                     <input class="search-input" type="text" name="query" placeholder="Search...">
                     <button class="search-button" type="submit">Search</button>
                 </form>
+
+<!--                <form class="search-form" th:action="@{/search}" method="get">-->
+<!--                    <input class="search-input" type="text" name="query" id="search-input" placeholder="Search..." list="suggestions">-->
+<!--                    <datalist id="suggestions"></datalist>-->
+<!--                    <button class="search-button" type="submit">Search</button>-->
+<!--                </form>-->
 
             </li>
 

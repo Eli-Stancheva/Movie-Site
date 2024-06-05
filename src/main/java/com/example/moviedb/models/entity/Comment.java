@@ -3,6 +3,7 @@ package com.example.moviedb.models.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Comment")
@@ -18,6 +19,13 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "news_id")
     private News news;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
+
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    private List<Comment> replies;
 
     @Column(nullable = false)
     private String comment;
@@ -62,5 +70,21 @@ public class Comment {
 
     public void setPostDate(LocalDate postDate) {
         this.postDate = postDate;
+    }
+
+    public Comment getParentComment() {
+        return parentComment;
+    }
+
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
+    }
+
+    public List<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Comment> replies) {
+        this.replies = replies;
     }
 }

@@ -7,6 +7,8 @@ import com.example.moviedb.models.entity.User;
 import com.example.moviedb.repositories.CommentRepository;
 import com.example.moviedb.repositories.NewsRepository;
 import com.example.moviedb.services.CommentService;
+import com.example.moviedb.services.UserService;
+import com.example.moviedb.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,11 +20,13 @@ import java.util.List;
 public class CommentServiceImpl implements CommentService {
     private final NewsRepository newsRepository;
     private final CommentRepository commentRepository;
+    private final UserService userService;
 
     @Autowired
-    public CommentServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository) {
+    public CommentServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository, UserService userService) {
         this.newsRepository = newsRepository;
         this.commentRepository = commentRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -55,6 +59,21 @@ public class CommentServiceImpl implements CommentService {
             commentDTO.setPostDate(comment.getPostDate());
             commentDTO.setUser(comment.getUser());
 
+
+            // Добави отговорите към коментара
+            List<CommentDTO> replyDTOs = new ArrayList<>();
+            for (Comment reply : comment.getReplies()) {
+                CommentDTO replyDTO = new CommentDTO();
+
+                replyDTO.setId(reply.getId());
+                replyDTO.setComment(reply.getComment());
+                replyDTO.setPostDate(reply.getPostDate());
+                replyDTO.setUser(reply.getUser());
+
+                replyDTOs.add(replyDTO);
+            }
+            commentDTO.setReplies(replyDTOs);
+
             commentDTOs.add(commentDTO);
         }
 
@@ -72,4 +91,16 @@ public class CommentServiceImpl implements CommentService {
 
         return false;
     }
+
+
+    @Override
+    public Comment findById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid comment ID"));
+    }
+
+    public void addReply(Comment reply) {
+        commentRepository.save(reply);
+    }
+
 }

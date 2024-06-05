@@ -139,14 +139,26 @@ public class MoviesServiceImpl implements MoviesService {
         return convertToDto(newestMovie);
     }
 
+//    @Override
+//    public List<MovieDTO> searchMovieIgnoreCase(String query) {
+//        return this.movieRepository
+//                .findByTitleContainingIgnoreCase(query)
+//                .stream()
+//                .map(this::convertToDto)
+//                .collect(Collectors.toList());
+//    }
+
+    @Override
+    public List<MovieDTO> searchMovieByTitleOrActorOrDirectorOrCategory(String query) {
+    List<Movie> books = movieRepository.findByTitleContainingIgnoreCaseOrActors_ActorNameContainingIgnoreCaseOrCategory_CategoryNameContainingIgnoreCaseOrDirector_DirectorNameContainingIgnoreCase(query, query, query, query);
+    return books.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
     @Override
     public List<MovieDTO> searchMovieIgnoreCase(String query) {
-        return this.movieRepository
-                .findByTitleContainingIgnoreCase(query)
-                .stream()
-                .map(this::convertToDto)
-                .filter(movie -> movie.getTitle().equalsIgnoreCase(query))
-                .collect(Collectors.toList());
+        return this.searchMovieByTitleOrActorOrDirectorOrCategory(query).stream()
+            .filter(book -> book.getTitle().toLowerCase().contains(query.toLowerCase()))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -328,5 +340,16 @@ public class MoviesServiceImpl implements MoviesService {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         movie.getCategory().remove(category);
         movieRepository.save(movie);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMovie(Long id) {
+        Optional<Movie> movieOptional = movieRepository.findById(id);
+        if (movieOptional.isPresent()) {
+            movieRepository.delete(movieOptional.get());
+        } else {
+            throw new IllegalArgumentException("Movie not found");
+        }
     }
 }

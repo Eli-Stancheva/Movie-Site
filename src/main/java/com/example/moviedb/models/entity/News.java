@@ -20,12 +20,15 @@ public class News {
     @Column(nullable = false, name = "date")
     private LocalDate date;
 
+    @Column(name = "image")
+    private String imageName;
     public News() {}
 
-    public News(String newsTitle, String newsContent, LocalDate date) {
+    public News(String newsTitle, String newsContent, LocalDate date, String imageName) {
         this.newsTitle = newsTitle;
         this.newsContent = newsContent;
         this.date = date;
+        this.imageName = imageName;
     }
 
     public String getNewsContent() {
@@ -58,5 +61,13 @@ public class News {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 }

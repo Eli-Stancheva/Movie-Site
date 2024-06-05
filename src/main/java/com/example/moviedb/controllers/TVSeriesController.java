@@ -212,4 +212,22 @@ public class TVSeriesController {
         tvSeriesService.removeCategoryFromSeries(seriesId, categoryId);
         return "redirect:/series/" + seriesId;
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteSeries(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        CurrentUser currentUser = userService.getCurrentUser();
+
+        if (currentUser.isAdmin()) {
+            try {
+                tvSeriesService.deleteSeries(id);
+                redirectAttributes.addFlashAttribute("message", "TV Series successfully deleted.");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error deleting TV Series: " + e.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to delete TV Series.");
+        }
+
+        return "redirect:/series/allSeries";
+    }
 }

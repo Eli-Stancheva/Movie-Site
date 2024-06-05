@@ -19,4 +19,5 @@ public interface DirectorService {
     void addDirector(Director director);
     Director convertDtoToDirector(DirectorDTO directorDTO);
     void updateDirector(Director updatedDirector);
+    void deleteDirector(Long id);
 }

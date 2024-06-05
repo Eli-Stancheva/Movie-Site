@@ -9,6 +9,7 @@ import com.example.moviedb.repositories.ActorRepository;
 import com.example.moviedb.services.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -67,9 +68,16 @@ public class ActorServiceImpl implements ActorService {
         }
     }
 
+
     @Override
+    @Transactional
     public void deleteActor(Long id) {
-        actorRepository.deleteById(id);
+        Optional<Actor> actorOptional = actorRepository.findById(id);
+        if (actorOptional.isPresent()) {
+            actorRepository.delete(actorOptional.get());
+        } else {
+            throw new IllegalArgumentException("Actor not found");
+        }
     }
 
     @Override

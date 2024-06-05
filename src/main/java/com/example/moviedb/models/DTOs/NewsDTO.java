@@ -1,6 +1,7 @@
 package com.example.moviedb.models.DTOs;
 
 import jakarta.persistence.Column;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -10,11 +11,13 @@ public class NewsDTO {
     private String newsTitle;
     private String newsContent;
     private LocalDate date;
+    private MultipartFile image;
     public NewsDTO(Long id, String newsTitle, String newsContent, LocalDate date){
         this.id = id;
         this.newsTitle = newsTitle;
         this.newsContent = newsContent;
         this.date = date;
+//        this.image = image;
     }
     public String getNewsContent() {
         return newsContent;
@@ -46,5 +49,13 @@ public class NewsDTO {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public MultipartFile getImage() {
+        return image;
+    }
+
+    public void setImage(MultipartFile image) {
+        this.image = image;
     }
 }

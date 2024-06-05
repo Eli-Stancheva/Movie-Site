@@ -14,6 +14,7 @@ public interface TVSeriesService {
     List<TVSeriesDTO> getTopRatedSeriesLimited();
     TVSeriesDTO convertToDto(TVSeries series);
     List<TVSeriesDTO> searchSeriesIgnoreCase(String query);
+    List<TVSeriesDTO> searchSeriesByTitleOrActorOrDirectorOrCategory(String query);
     TVSeriesDTO getSeriesById(Long id);
     int getUserRatingForSeries(Long movieId, Long userId);
     double getAverageRatingForSeries(Long movieId);
@@ -31,4 +32,5 @@ public interface TVSeriesService {
     List<TVSeries> findSeriesByYear(int year);
     void removeActorFromSeries(Long seriesId, Long actorId);
     void removeCategoryFromSeries(Long seriesId, Long categoryId);
+    void deleteSeries(Long id);
 }

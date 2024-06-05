@@ -14,4 +14,5 @@ public interface NewsService {
     void addNews(News news);
     News convertDtoToNews(NewsDTO newsDTO);
     void updateNews(News updatedNews);
+    void deleteNews(Long id);
 }

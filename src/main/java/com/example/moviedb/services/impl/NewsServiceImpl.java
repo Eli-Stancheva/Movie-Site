@@ -1,13 +1,13 @@
 package com.example.moviedb.services.impl;
 
-import com.example.moviedb.models.DTOs.DirectorDTO;
 import com.example.moviedb.models.DTOs.NewsDTO;
-import com.example.moviedb.models.entity.Director;
 import com.example.moviedb.models.entity.News;
+import com.example.moviedb.repositories.CommentRepository;
 import com.example.moviedb.services.NewsService;
 import com.example.moviedb.repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -17,10 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public NewsServiceImpl(NewsRepository newsRepository) {
+    public NewsServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository) {
         this.newsRepository = newsRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Override
@@ -97,6 +99,19 @@ public class NewsServiceImpl implements NewsService {
             newsRepository.save(news);
         } else {
             throw new NoSuchElementException("News not found with id: " + updatedNews.getId());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteNews(Long id) {
+        commentRepository.deleteByNewsId(id);
+
+        Optional<News> newsOptional = newsRepository.findById(id);
+        if (newsOptional.isPresent()) {
+            newsRepository.delete(newsOptional.get());
+        } else {
+            throw new IllegalArgumentException("News not found");
         }
     }
 }

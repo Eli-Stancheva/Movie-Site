@@ -10,18 +10,22 @@
 
 <h1>Add News</h1>
 
-<form th:action="@{/news/add}" method="post">
-    <label for="title">Title:</label><br>
-    <input type="text" id="title" name="newsTitle" required><br>
+<form th:action="@{/news/add}" method="post" enctype="multipart/form-data">
+    <label for="newsTitle">Title:</label><br>
+    <input type="text" id="newsTitle" name="newsTitle" required><br>
 
-    <label for="content">Content:</label><br>
-    <textarea id="content" name="newsContent" required></textarea><br>
+    <label for="newsContent">Content:</label><br>
+    <textarea id="newsContent" name="newsContent" required></textarea><br>
 
     <label for="date">Date:</label><br>
     <input type="date" id="date" name="date" required><br>
 
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" required><br>
+
     <input type="submit" value="Add">
 </form>
+
 
 
 </body>

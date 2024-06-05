@@ -578,3 +578,11 @@ button.close span {
     flex-wrap: wrap;
     gap: 20px;
 }
+
+
+.comment-section {
+    margin-left: 20px; /* Adjust as needed */
+}
+.reply-section {
+    margin-left: 40px; /* Adjust as needed */
+}

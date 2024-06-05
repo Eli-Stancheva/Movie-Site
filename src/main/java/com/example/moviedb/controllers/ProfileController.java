@@ -51,9 +51,12 @@ public class ProfileController {
         if (bindingResult.hasErrors()) {
             return "redirect:/profile";
         }
+
+        CurrentUser currentUser = userService.getCurrentUser();
+        userForm.setUsername(currentUser.getUsername());
+
         userService.updateUser(userForm);
 
-        userForm.setUsername("");
         userForm.setEmail("");
         userForm.setPassword("");
         userForm.setConfirmPassword("");

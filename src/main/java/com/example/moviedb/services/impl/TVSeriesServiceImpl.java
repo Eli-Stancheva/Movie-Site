@@ -67,12 +67,15 @@ public class TVSeriesServiceImpl implements TVSeriesService {
     }
 
     @Override
+    public List<TVSeriesDTO> searchSeriesByTitleOrActorOrDirectorOrCategory(String query) {
+        List<TVSeries> series = tvSeriesRepository.findByTitleContainingIgnoreCaseOrActors_ActorNameContainingIgnoreCaseOrCategory_CategoryNameContainingIgnoreCaseOrDirector_DirectorNameContainingIgnoreCase(query, query, query, query);
+        return series.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
     public List<TVSeriesDTO> searchSeriesIgnoreCase(String query) {
-        return this.tvSeriesRepository
-                .findByTitleContainingIgnoreCase(query)
-                .stream()
-                .map(this::convertToDto)
-                .filter(movie -> movie.getTitle().equalsIgnoreCase(query))
+        return this.searchSeriesByTitleOrActorOrDirectorOrCategory(query).stream()
+                .filter(s -> s.getTitle().toLowerCase().contains(query.toLowerCase()))
                 .collect(Collectors.toList());
     }
 
@@ -295,5 +298,16 @@ public class TVSeriesServiceImpl implements TVSeriesService {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new RuntimeException("Category not found"));
         series.getCategory().remove(category);
         tvSeriesRepository.save(series);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSeries(Long id) {
+        Optional<TVSeries> seriesOptional = tvSeriesRepository.findById(id);
+        if (seriesOptional.isPresent()) {
+            tvSeriesRepository.delete(seriesOptional.get());
+        } else {
+            throw new IllegalArgumentException("TV Series not found");
+        }
     }
 }

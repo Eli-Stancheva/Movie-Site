@@ -1,7 +1,6 @@
 package com.example.moviedb.controllers;
 
 import com.example.moviedb.models.DTOs.ActorDTO;
-import com.example.moviedb.models.DTOs.MovieDTO;
 import com.example.moviedb.models.entity.Actor;
 import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.TVSeries;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,10 +21,12 @@ import java.util.List;
 @RequestMapping("/actors")
 public class ActorController {
     private final ActorService actorService;
+    private final UserService userService;
 
     @Autowired
-    public ActorController(ActorService actorService) {
+    public ActorController(ActorService actorService, UserService userService) {
         this.actorService = actorService;
+        this.userService = userService;
     }
 
     @GetMapping("/allActors")
@@ -86,5 +88,23 @@ public class ActorController {
         actorService.updateActor(existingActor);
 
         return "redirect:/actors/" + actorId;
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteActor(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        CurrentUser currentUser = userService.getCurrentUser();
+
+        if (currentUser.isAdmin()) {
+            try {
+                actorService.deleteActor(id);
+                redirectAttributes.addFlashAttribute("message", "Actor successfully deleted.");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error deleting Actor: " + e.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to delete actor.");
+        }
+
+        return "redirect:/actors/allActors";
     }
 }

@@ -12,6 +12,7 @@ import com.example.moviedb.repositories.TVSeriesRepository;
 import com.example.moviedb.services.DirectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -110,6 +111,17 @@ public class DirectorServiceImpl implements DirectorService {
             directorRepository.save(director);
         } else {
             throw new NoSuchElementException("Director not found with id: " + updatedDirector.getId());
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deleteDirector(Long id) {
+        Optional<Director> directorOptional = directorRepository.findById(id);
+        if (directorOptional.isPresent()) {
+            directorRepository.delete(directorOptional.get());
+        } else {
+            throw new IllegalArgumentException("Director not found");
         }
     }
 }

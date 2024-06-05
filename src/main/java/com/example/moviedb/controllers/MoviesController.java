@@ -225,5 +225,23 @@ public class MoviesController {
         moviesService.removeCategoryFromMovie(movieId, categoryId);
         return "redirect:/movies/" + movieId;
     }
+
+    @PostMapping("/delete/{id}")
+    public String deleteMovie(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        CurrentUser currentUser = userService.getCurrentUser();
+
+        if (currentUser.isAdmin()) {
+            try {
+                moviesService.deleteMovie(id);
+                redirectAttributes.addFlashAttribute("message", "Movie successfully deleted.");
+            } catch (Exception e) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Error deleting movie: " + e.getMessage());
+            }
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "You do not have permission to delete movies.");
+        }
+
+        return "redirect:/movies/allMovies";
+    }
 }
 

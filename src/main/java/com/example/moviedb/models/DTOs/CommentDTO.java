@@ -4,6 +4,7 @@ import com.example.moviedb.models.entity.News;
 import com.example.moviedb.models.entity.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class CommentDTO {
     private Long id;
@@ -11,7 +12,7 @@ public class CommentDTO {
     private News news;
     private String comment;
     private LocalDate postDate;
-
+    private List<CommentDTO> replies;
     public Long getId() {
         return id;
     }
@@ -36,7 +37,6 @@ public class CommentDTO {
         this.comment = comment;
     }
 
-
     public News getNews() {
         return news;
     }
@@ -50,5 +50,13 @@ public class CommentDTO {
 
     public void setPostDate(LocalDate postDate) {
         this.postDate = postDate;
+    }
+
+    public List<CommentDTO> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<CommentDTO> replies) {
+        this.replies = replies;
     }
 }

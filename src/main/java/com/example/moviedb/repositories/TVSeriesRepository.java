@@ -30,4 +30,8 @@ public interface TVSeriesRepository extends JpaRepository<TVSeries, Long> {
 
     @Query("SELECT s FROM TVSeries s WHERE YEAR(s.releaseDate) = :year")
     List<TVSeries> findSeriesByReleaseYear(@Param("year") int year);
+
+    List<TVSeries> findByTitleContainingIgnoreCaseOrActors_ActorNameContainingIgnoreCaseOrCategory_CategoryNameContainingIgnoreCaseOrDirector_DirectorNameContainingIgnoreCase(
+            String title, String actorName, String categoryName, String directorName
+    );
 }

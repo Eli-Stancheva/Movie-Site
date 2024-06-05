@@ -110,20 +110,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserForm userForm) {
         CurrentUser currentUser = getCurrentUser();
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (currentUser != null) {
-            User user = userRepository.findById(currentUser.getId()).orElse(null);
-            if (user != null) {
-                user.setUsername(userForm.getUsername());
-                user.setEmail(userForm.getEmail());
-
-                if (!userForm.getPassword().isEmpty()) {
-                    user.setPassword(passwordEncoder.encode(userForm.getPassword()));
-                }
-
-                userRepository.save(user);
-            }
+        user.setEmail(userForm.getEmail());
+        if (!userForm.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userForm.getPassword()));
         }
+
+        userRepository.save(user);
     }
 
     @Override
@@ -131,7 +125,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
 
-//        Optional<User> user = this.userRepository.findByUsername(username);
         WatchlistMovie watchlist = new WatchlistMovie();
         watchlist.setUser(user);
         watchlist.setMovie(movie);
@@ -170,5 +163,11 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new RuntimeException("The password reset code was not generated.");
         }
+    }
+
+    @Override
+    public User getCurrentUserEntity() {
+        return userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
     }
 }

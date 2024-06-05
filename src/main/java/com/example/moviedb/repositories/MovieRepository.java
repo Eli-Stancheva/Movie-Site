@@ -35,4 +35,10 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     @Query("SELECT m FROM Movie m WHERE YEAR(m.releaseDate) = :year")
     List<Movie> findByReleaseYear(@Param("year") int year);
+
+//    List<Movie> findByTitleContainingIgnoreCaseOrActorsNameContainingIgnoreCaseOrCategoryNameContainingIgnoreCaseOrDirectorName(String title, String authorName, String categoryName, String directorName);
+
+    List<Movie> findByTitleContainingIgnoreCaseOrActors_ActorNameContainingIgnoreCaseOrCategory_CategoryNameContainingIgnoreCaseOrDirector_DirectorNameContainingIgnoreCase(
+            String title, String actorName, String categoryName, String directorName
+    );
 }
