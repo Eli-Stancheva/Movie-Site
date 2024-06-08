@@ -3,6 +3,7 @@ package com.example.moviedb.repositories;
 import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.User;
 import com.example.moviedb.models.entity.WatchlistMovie;
+import com.example.moviedb.util.CurrentUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -18,4 +19,5 @@ public interface WatchlistMovieRepository extends JpaRepository<WatchlistMovie, 
     boolean existsByUserIdAndMovieId(Long userId, Long movieId);
 
     Optional<WatchlistMovie> findByUserIdAndMovieId(Long userId, Long movieId);
+    boolean existsByUserAndMovieId(User currentUser, Long movieId);
 }

@@ -14,10 +14,7 @@ import com.example.moviedb.util.CurrentUser;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +24,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -130,13 +126,12 @@ public class NewsController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addNews(@RequestParam("newsTitle") String title,
+    public String addNews(@RequestParam("newsTitle") String title,
                                           @RequestParam("newsContent") String content,
                                           @RequestParam("date") LocalDate date,
-                                          @RequestParam("image") MultipartFile file) {
-        try {
+                                          @RequestParam("image") MultipartFile file) throws IOException {
             // Запазване на файла на файловата система
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String fileName = file.getOriginalFilename();
             Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
@@ -149,46 +144,9 @@ public class NewsController {
 
             newsRepository.save(news);
 
-            return ResponseEntity.ok("News added successfully: " + title);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Could not add news: " + title);
-        }
+            return "redirect:/news/add-form";
     }
 
-
-//    @PostMapping("/add")
-//    public String addNews(@ModelAttribute NewsDTO newsDTO, Model model) {
-//        String title = newsDTO.getNewsTitle();
-//        String content = newsDTO.getNewsContent();
-//        LocalDate date = newsDTO.getDate();
-//        MultipartFile image = newsDTO.getImage();
-//
-//        String imageName = fileStorageService.storeFile(image);
-//
-//        News news = new News(title, content, date, imageName);
-//
-//        newsService.addNews(news);
-//        model.addAttribute("successMessage", "News successfully added!");
-//
-//        return "add-news";
-//    }
-
-//    @PostMapping("/add")
-//    public News addNews(@RequestParam("title") String title,
-//                        @RequestParam("content") String content,
-//                        @RequestParam("date") String date,
-//                        @RequestParam("file") MultipartFile file) {
-//
-//        String fileName = fileStorageService.storeFile(file);
-//
-//        News news = new News();
-//        news.setNewsTitle(title);
-//        news.setNewsContent(content);
-//        news.setDate(new Date()); // актуализирайте според вашия формат за дата
-//        news.setImageName(fileName);
-//
-//        return newsService.save(news);
-//    }
     @PostMapping("/update")
     public String updateNews(@ModelAttribute News updatedNews) {
         Long newsId = updatedNews.getId();
@@ -249,24 +207,6 @@ public class NewsController {
         }
 
         return "redirect:/news/" + commentService.findById(commentId).getNews().getId();
-    }
-
-
-    @GetMapping("/images/{fileName:.+}")
-    public ResponseEntity<Resource> getImage(@PathVariable String fileName) {
-        try {
-            Path filePath = Paths.get("uploads/").resolve(fileName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .contentType(MediaType.parseMediaType(Files.probeContentType(filePath)))
-                        .body(resource);
-            } else {
-                throw new RuntimeException("File not found " + fileName);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error: " + e.getMessage());
-        }
     }
 
 }

@@ -10,4 +10,6 @@ public interface WatchlistService {
     void addMovieToWatchlistByName(Long listId, String movieName);
     void addSeriesToWatchlistByName(Long listId, String seriesName);
     Watchlist getWatchlistById(Long listId);
+    void removeMovieFromWatchlist(Long watchlistId, Long movieId);
+    void removeSeriesFromWatchlist(Long watchlistId, Long seriesId);
 }

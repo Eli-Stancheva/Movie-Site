@@ -41,9 +41,6 @@ public class WatchlistController {
     @PostMapping("/create")
     public String createWatchlist(@RequestParam String listName) {
         String username = currentUser.getUsername();
-//        watchlistService.createWatchlist(username, listName);
-//        return "redirect:/watchlist/user-watchlist";
-
         Watchlist newWatchlist = watchlistService.createWatchlist(username, listName);
         return "redirect:/watchlist/" + newWatchlist.getId();
     }
@@ -62,13 +59,20 @@ public class WatchlistController {
 
     @GetMapping("/{listId}")
     public String viewWatchlist(@PathVariable Long listId, Model model) {
-//        String username = currentUser.getUsername();
-//        List<Watchlist> watchlist = watchlistService.getUserWatchlist(username);
-//        model.addAttribute("watchlist", watchlist);
-
         Watchlist watchlist = watchlistService.getWatchlistById(listId);
         model.addAttribute("watchlist", watchlist);
         return "watchlist-info";
     }
 
+    @PostMapping("/{watchlistId}/movies/{movieId}/delete")
+    public String deleteMovieFromWatchlist(@PathVariable Long watchlistId, @PathVariable Long movieId) {
+        watchlistService.removeMovieFromWatchlist(watchlistId, movieId);
+        return "redirect:/watchlist/" + watchlistId;
+    }
+
+    @PostMapping("/{watchlistId}/series/{seriesId}/delete")
+    public String deleteSeriesFromWatchlist(@PathVariable Long watchlistId, @PathVariable Long seriesId) {
+        watchlistService.removeSeriesFromWatchlist(watchlistId, seriesId);
+        return "redirect:/watchlist/" + watchlistId;
+    }
 }

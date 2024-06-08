@@ -179,6 +179,7 @@ button.close span {
 .movie-content {
     display: flex; /* За да направите елементите на ред */
     align-items: flex-start; /* За вертикално подравняване в началото */
+
 }
 
 .movie-img,
@@ -203,8 +204,7 @@ button.close span {
 
 .movie-content {
     position: relative;
-    z-index: 1; /* Поставете съдържанието над фона */
-    /* Други стилове на вашето съдържание */
+    z-index: 1;
 }
 
 .movie-background.active {
@@ -212,20 +212,31 @@ button.close span {
 }
 
 .blur-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    filter: blur(40px); /* Можете да промените стойността на размазване според вашите предпочитания */
-    opacity: 0.5;
+    /*position: fixed;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*z-index: -1;*/
+    /*filter: blur(40px); !* Можете да промените стойността на размазване според вашите предпочитания *!*/
+    /*opacity: 0.5;*/
 
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px);
+    -webkit-filter: blur(8px);
 }
 
 .movie-info {
+    /*position: relative;*/
+    /*z-index: 1;*/
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: -150px;
 }
 
 .centered-text {
@@ -585,4 +596,30 @@ button.close span {
 }
 .reply-section {
     margin-left: 40px; /* Adjust as needed */
+}
+
+
+.actor-img-movie {
+    width: 70px; /* Размер на изображението */
+    height: 70px; /* Размер на изображението */
+    border-radius: 10px; /* Леко заоблени ъгли */
+    object-fit: cover;
+    padding: 5px; /* Празно пространство около изображението */
+    border: 2px solid #ddd; /* Граница за по-добър вид */
+    margin-right: 10px;
+    box-sizing: border-box; /* Уверете се, че padding не променя размера на самото изображение */
+}
+
+.actor-name {
+    color: black;
+    transition: color 0.3s; /* Плавен преход на цвета при ховър */
+    text-decoration: none;
+ }
+
+.actor-name:hover {
+    color: grey; /* Цвят при ховър */
+}
+
+.bio-info{
+    text-align: justify;
 }

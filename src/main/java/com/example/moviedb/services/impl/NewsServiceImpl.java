@@ -3,6 +3,7 @@ package com.example.moviedb.services.impl;
 import com.example.moviedb.models.DTOs.NewsDTO;
 import com.example.moviedb.models.entity.News;
 import com.example.moviedb.repositories.CommentRepository;
+import com.example.moviedb.services.FileStorageService;
 import com.example.moviedb.services.NewsService;
 import com.example.moviedb.repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,13 @@ import java.util.stream.Collectors;
 public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final CommentRepository commentRepository;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public NewsServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository) {
+    public NewsServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository, FileStorageService fileStorageService) {
         this.newsRepository = newsRepository;
         this.commentRepository = commentRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -33,7 +36,8 @@ public class NewsServiceImpl implements NewsService {
                         news.getId(),
                         news.getNewsTitle(),
                         news.getNewsContent(),
-                        news.getDate()
+                        news.getDate(),
+                        news.getImageName()
                 )).collect(Collectors.toList());
     }
 
@@ -45,7 +49,8 @@ public class NewsServiceImpl implements NewsService {
                         news.getId(),
                         news.getNewsTitle(),
                         news.getNewsContent(),
-                        news.getDate()
+                        news.getDate(),
+                        news.getImageName()
                 )).collect(Collectors.toList());
     }
 
@@ -67,7 +72,8 @@ public class NewsServiceImpl implements NewsService {
                 news.getId(),
                 news.getNewsTitle(),
                 news.getNewsContent(),
-                news.getDate());
+                news.getDate(),
+                news.getImageName());
     }
 
 
@@ -109,7 +115,16 @@ public class NewsServiceImpl implements NewsService {
 
         Optional<News> newsOptional = newsRepository.findById(id);
         if (newsOptional.isPresent()) {
-            newsRepository.delete(newsOptional.get());
+            News news = newsOptional.get();
+
+            // Изтриване на свързания файл
+            if (news.getImageName() != null) {
+                fileStorageService.deleteFile(news.getImageName());
+            }
+
+            // Изтриване на записа в базата данни
+            newsRepository.delete(news);
+//            newsRepository.delete(newsOptional.get());
         } else {
             throw new IllegalArgumentException("News not found");
         }

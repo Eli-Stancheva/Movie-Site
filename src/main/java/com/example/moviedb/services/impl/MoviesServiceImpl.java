@@ -7,6 +7,7 @@ import com.example.moviedb.models.DTOs.MovieDTO;
 import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.*;
 import com.example.moviedb.services.MoviesService;
+import com.example.moviedb.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -351,5 +352,10 @@ public class MoviesServiceImpl implements MoviesService {
         } else {
             throw new IllegalArgumentException("Movie not found");
         }
+    }
+
+    @Override
+    public boolean isMovieInWatchlist(User user, Long movieId) {
+        return watchlistMovieRepository.existsByUserAndMovieId(user, movieId);
     }
 }

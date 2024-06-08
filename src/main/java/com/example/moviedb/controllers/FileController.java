@@ -1,10 +1,7 @@
 package com.example.moviedb.controllers;
 
 import com.example.moviedb.services.FileStorageService;
-import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +20,18 @@ public class FileController {
     public Map<String, String> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
 
+//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/api/files/download/")
+//                .path(fileName)
+//                .toUriString();
+
+//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/img/")
+//                .path(fileName)
+//                .toUriString();
+
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/files/download/")
+                .path("/uploads/")
                 .path(fileName)
                 .toUriString();
 
@@ -37,13 +44,13 @@ public class FileController {
         return response;
     }
 
-    @GetMapping("/download/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
-
-        return ResponseEntity.ok()
-                .contentType(org.springframework.http.MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
-    }
+//    @GetMapping("/download/{fileName:.+}")
+//    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+//        Resource resource = fileStorageService.loadFileAsResource(fileName);
+//
+//        return ResponseEntity.ok()
+//                .contentType(org.springframework.http.MediaType.parseMediaType("application/octet-stream"))
+//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+//                .body(resource);
+//    }
 }

@@ -11,13 +11,13 @@ public class NewsDTO {
     private String newsTitle;
     private String newsContent;
     private LocalDate date;
-    private MultipartFile image;
-    public NewsDTO(Long id, String newsTitle, String newsContent, LocalDate date){
+    private String image;
+    public NewsDTO(Long id, String newsTitle, String newsContent, LocalDate date, String image){
         this.id = id;
         this.newsTitle = newsTitle;
         this.newsContent = newsContent;
         this.date = date;
-//        this.image = image;
+        this.image = image;
     }
     public String getNewsContent() {
         return newsContent;
@@ -51,11 +51,11 @@ public class NewsDTO {
         this.date = date;
     }
 
-    public MultipartFile getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(MultipartFile image) {
+    public void setImage(String  image) {
         this.image = image;
     }
 }

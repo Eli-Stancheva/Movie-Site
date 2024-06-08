@@ -24,7 +24,7 @@
 
     <p th:text="${actorById.actorBirthdate}"></p>
 
-    <p th:text="${actorById.actorBiography}"></p>
+    <p th:text="${actorById.actorBiography}" class="bio-info"></p>
 
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
 

@@ -87,4 +87,18 @@ public class WatchlistServiceImpl implements WatchlistService {
         return watchlistRepository.findById(listId)
                 .orElseThrow(() -> new IllegalArgumentException("Watchlist not found with id: " + listId));
     }
+
+    @Override
+    public void removeMovieFromWatchlist(Long watchlistId, Long movieId) {
+        Watchlist watchlist = watchlistRepository.findById(watchlistId).orElseThrow(() -> new RuntimeException("Watchlist not found"));
+        watchlist.getMovies().removeIf(movie -> movie.getId().equals(movieId));
+        watchlistRepository.save(watchlist);
+    }
+
+    @Override
+    public void removeSeriesFromWatchlist(Long watchlistId, Long seriesId) {
+        Watchlist watchlist = watchlistRepository.findById(watchlistId).orElseThrow(() -> new RuntimeException("Watchlist not found"));
+        watchlist.getSeries().removeIf(series -> series.getId().equals(seriesId));
+        watchlistRepository.save(watchlist);
+    }
 }

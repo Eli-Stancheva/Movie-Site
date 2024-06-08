@@ -167,7 +167,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getCurrentUserEntity() {
-        return userRepository.findById(currentUser.getId())
+        Long userId = currentUser.getId();
+        if (userId == null) {
+            throw new IllegalArgumentException("Current user ID is null");
+        }
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
     }
 }

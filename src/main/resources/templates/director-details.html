@@ -24,7 +24,7 @@
 
   <p th:text="${directorById.directorBirthdate}"></p>
 
-  <p th:text="${directorById.directorBiography}"></p>
+  <p th:text="${directorById.directorBiography}" class="bio-info"></p>
 
   <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
   <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/directors/delete/' + ${directorById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this Director?');">

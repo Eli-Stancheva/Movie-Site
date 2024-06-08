@@ -88,6 +88,11 @@ public class MoviesController {
 
         List<Director> allDirectors = directorService.findAll();
         model.addAttribute("allDirectors", allDirectors);
+
+//        User user = userService.getCurrentUserEntity();
+//        boolean isInWatchlist = moviesService.isMovieInWatchlist(user, id);
+//        model.addAttribute("isInWatchlist", isInWatchlist);
+
         return "movie-details";
     }
 

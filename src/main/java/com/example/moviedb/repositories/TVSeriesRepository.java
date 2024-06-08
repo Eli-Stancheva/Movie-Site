@@ -16,8 +16,7 @@ public interface TVSeriesRepository extends JpaRepository<TVSeries, Long> {
 
     List<TVSeries> findAll();
 
-//    List<TVSeries> findByCategory(String genre);
-
+    List<TVSeries> findByCategoryId(Long categoryId);
     @Query(value = "SELECT a.* FROM Actor a INNER JOIN TVSeries_Actor sa ON a.id = sa.actor_id WHERE sa.tvSeries_id = :tvSeriesId", nativeQuery = true)
     List<Actor> findActorsByTVSeriesId(@Param("tvSeriesId") Long tvSeriesId);
 
