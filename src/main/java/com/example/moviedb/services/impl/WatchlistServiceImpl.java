@@ -46,41 +46,16 @@ public class WatchlistServiceImpl implements WatchlistService {
         return watchlistRepository.findByUser(user);
     }
 
-    @Override
-    public void addMovieToWatchlistByName(Long listId, String movieName) {
-        Watchlist watchlist = watchlistRepository.findById(listId)
-                .orElseThrow(() -> new EntityNotFoundException("Watchlist not found with id: " + listId));
-
-
-        Optional<Movie> optionalMovie = movieRepository.findByTitle(movieName);
-        Movie movie = optionalMovie.orElseThrow(() -> new EntityNotFoundException("Movie not found with title: " + movieName));
-
-
-        if (movie == null) {
-            throw new EntityNotFoundException("Movie not found with title: " + movieName);
-        }
-
+    public void addMovieToWatchlist(Watchlist watchlist, Movie movie) {
         watchlist.getMovies().add(movie);
         watchlistRepository.save(watchlist);
     }
 
-    @Override
-    public void addSeriesToWatchlistByName(Long listId, String seriesName) {
-        Watchlist watchlist = watchlistRepository.findById(listId)
-                .orElseThrow(() -> new EntityNotFoundException("Watchlist not found with id: " + listId));
-
-
-        Optional<TVSeries> optionalSeries = seriesRepository.findByTitle(seriesName);
-        TVSeries series = optionalSeries.orElseThrow(() -> new EntityNotFoundException("Movie not found with title: " + seriesName));
-
-
-        if (series == null) {
-            throw new EntityNotFoundException("TV Series not found with title: " + seriesName);
-        }
-
+    public void addSeriesToWatchlist(Watchlist watchlist, TVSeries series) {
         watchlist.getSeries().add(series);
         watchlistRepository.save(watchlist);
     }
+
 
     @Override
     public Watchlist getWatchlistById(Long listId) {

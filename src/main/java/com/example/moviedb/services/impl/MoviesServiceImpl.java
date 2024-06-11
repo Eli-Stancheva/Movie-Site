@@ -9,9 +9,17 @@ import com.example.moviedb.repositories.*;
 import com.example.moviedb.services.MoviesService;
 import com.example.moviedb.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,7 +35,8 @@ public class MoviesServiceImpl implements MoviesService {
     private final RatingSeriesFromUserRepository ratingSeriesFromUserRepository;
     private final WatchlistMovieRepository watchlistMovieRepository;
     private final List<MovieDTO> movies;
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public MoviesServiceImpl(MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository, CategoryRepository categoryRepository, ActorRepository actorRepository, DirectorRepository directorRepository, RatingFromUserRepository ratingFromUserRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistMovieRepository watchlistMovieRepository, List<MovieDTO> movies){
         this.movieRepository = movieRepository;
@@ -39,6 +48,11 @@ public class MoviesServiceImpl implements MoviesService {
         this.ratingSeriesFromUserRepository = ratingSeriesFromUserRepository;
         this.watchlistMovieRepository = watchlistMovieRepository;
         this.movies = movies;
+    }
+
+    @Override
+    public Optional<Movie> findByName(String name) {
+        return movieRepository.findByTitle(name);
     }
 
     @Override
@@ -357,5 +371,28 @@ public class MoviesServiceImpl implements MoviesService {
     @Override
     public boolean isMovieInWatchlist(User user, Long movieId) {
         return watchlistMovieRepository.existsByUserAndMovieId(user, movieId);
+    }
+
+    @Override
+    public void saveMovies(String title, LocalDate date, double rating, MultipartFile file, String videoURL, String description, Long directorId) throws IOException {
+        // Запазване на файла на файловата система
+        String fileName = file.getOriginalFilename();
+        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        // Запазване на метаданните в базата данни
+        Movie movie = new Movie();
+        movie.setTitle(title);
+        movie.setReleaseDate(date);
+        movie.setRating(rating); // уверете се, че имате дата в заявката
+        movie.setImageURL(fileName);
+        movie.setVideoURL(videoURL);
+        movie.setDescription(description);
+
+        Director director = directorRepository.findById(directorId)
+                .orElseThrow(() -> new NoSuchElementException("Director not found with id: " + directorId));
+        movie.setDirector(director);
+
+        movieRepository.save(movie);
     }
 }

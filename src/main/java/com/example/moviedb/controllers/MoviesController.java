@@ -8,11 +8,20 @@ import com.example.moviedb.services.*;
 import com.example.moviedb.util.CurrentUser;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -30,8 +39,11 @@ public class MoviesController {
     private final UserService userService;
     private final MovieActorService movieActorService;
     private final MovieCategoryService movieCategoryService;
+    private final FileStorageService fileStorageService;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
-    public MoviesController(MoviesService moviesService, ActorService actorService, DirectorService directorService, CategoryService categoryService, TVSeriesService tvSeriesService, UserService userService, MovieActorService movieActorService, MovieCategoryService movieCategoryService) {
+    public MoviesController(MoviesService moviesService, ActorService actorService, DirectorService directorService, CategoryService categoryService, TVSeriesService tvSeriesService, UserService userService, MovieActorService movieActorService, MovieCategoryService movieCategoryService, FileStorageService fileStorageService) {
         this.moviesService = moviesService;
         this.actorService = actorService;
         this.directorService = directorService;
@@ -40,6 +52,7 @@ public class MoviesController {
         this.userService = userService;
         this.movieActorService = movieActorService;
         this.movieCategoryService = movieCategoryService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/allMovies")
@@ -164,24 +177,57 @@ public class MoviesController {
     }
 
     @PostMapping("/add")
-    public String addMovie(@ModelAttribute MovieDTO movieDTO, @RequestParam Long directorId, Model model) {
-    moviesService.addMovie(movieDTO.getTitle(),
-            movieDTO.getReleaseDate(),
-            movieDTO.getRating(),
-            movieDTO.getImageURL(),
-            movieDTO.getVideoURL(),
-            movieDTO.getDescription(),
-            directorId);
-
-    model.addAttribute("successMessage", "Successfully added!");
-    return "add-movies";
+    public String addMovie(@RequestParam("title") String title,
+                           @RequestParam("releaseDate") LocalDate date,
+                           @RequestParam("rating") double rating,
+                           @RequestParam("imageURL") MultipartFile file,
+                           @RequestParam("videoURL") String videoURL,
+                           @RequestParam("description") String description,
+                           @RequestParam("directorId") Long directorId) throws IOException {
+        moviesService.saveMovies(title, date, rating, file, videoURL, description, directorId);
+        return "redirect:/movies/add-form";
     }
 
     @PostMapping("/update/{id}")
-    public String updateMovie(@PathVariable Long id, @ModelAttribute MovieDTO movieDTO, @RequestParam("directorId") Long directorId) {
-        moviesService.updateMovie(id, movieDTO.getTitle(), movieDTO.getReleaseDate(), movieDTO.getRating(),
-                movieDTO.getImageURL(), movieDTO.getVideoURL(), movieDTO.getDescription(), directorId);
-        return "redirect:/movies/{id}";
+    public String updateMovie(@ModelAttribute Movie updatedMovie,
+                              @RequestParam("file") MultipartFile file,
+                              @RequestParam("directorId") Long directorId) throws IOException {
+
+        Long movieId = updatedMovie.getId();
+
+        MovieDTO movieDTO = moviesService.getMovieById(movieId);
+        Movie existingMovie = moviesService.convertDtoToMovie(movieDTO);
+
+        existingMovie.setTitle(updatedMovie.getTitle());
+        existingMovie.setReleaseDate(updatedMovie.getReleaseDate());
+        existingMovie.setRating(updatedMovie.getRating());
+        existingMovie.setVideoURL(updatedMovie.getVideoURL());
+        existingMovie.setDescription(updatedMovie.getDescription());
+        // existingMovie.setDirector(updatedMovie.getDirector());
+
+        if (!file.isEmpty()) {
+            String oldFileName = existingMovie.getImageURL();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                fileStorageService.deleteFile(oldFileName);
+            }
+
+            String fileName = file.getOriginalFilename();
+            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            existingMovie.setImageURL(fileName);
+        }
+
+        moviesService.updateMovie(existingMovie.getId(),
+                existingMovie.getTitle(),
+                existingMovie.getReleaseDate(),
+                existingMovie.getRating(),
+                existingMovie.getImageURL(),
+                existingMovie.getVideoURL(),
+                existingMovie.getDescription(),
+                directorId);
+
+        return "redirect:/movies/" + movieId;
     }
 
     @PostMapping("/add-actors")

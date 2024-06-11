@@ -21,7 +21,7 @@
 
     <div class="movie-content">
       <div class="movie-img">
-        <img th:src="@{${seriesById.imageURL}}" style="height: 400px; width: 300px; ">
+        <img th:src="@{'/uploads/' + ${seriesById.imageURL}}" style="height: 400px; width: 300px"  alt="Image">
       </div>
       <div class="movie-video">
         <iframe width="700" height="400" th:src="@{'https://www.youtube.com/embed/' + ${seriesById.videoURL}}" allowfullscreen></iframe>
@@ -178,7 +178,7 @@
         <h5 class="modal-title">Update Series Information</h5>
       </div>
       <div class="modal-body">
-        <form th:action="@{'/series/update/'  + ${seriesById.id} }" method="post">
+        <form th:action="@{'/series/update/'  + ${seriesById.id} }" method="post" enctype="multipart/form-data">
           <input type="hidden" id="id" name="id" th:value="${seriesById.id}">
 
           <label for="title">Title:</label><br>
@@ -193,8 +193,11 @@
           <label for="rating">Rating:</label><br>
           <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" th:value="${seriesById.rating}"><br>
 
-          <label for="imageURL">Image URL:</label><br>
-          <input type="text" id="imageURL" name="imageURL" th:value="${seriesById.imageURL}"><br>
+<!--          <label for="imageURL">Image URL:</label><br>-->
+<!--          <input type="text" id="imageURL" name="imageURL" th:value="${seriesById.imageURL}"><br>-->
+
+          <label for="file">Image:</label><br>
+          <input type="file" id="file" name="file" />
 
           <label for="videoURL">Video URL:</label><br>
           <input type="text" id="videoURL" name="videoURL" th:value="${seriesById.videoURL}"><br>

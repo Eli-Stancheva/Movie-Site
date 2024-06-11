@@ -87,6 +87,14 @@ public class CommentServiceImpl implements CommentService {
         if (comment != null && comment.getUser().getId().equals(user.getId())) {
             commentRepository.delete(comment);
             return true;
+        } else if (user.getRole() != null && user.getRole().getName().equals("ADMIN")) {
+            commentRepository.delete(comment);
+            return true;
+        }
+
+        if (comment != null && comment.getUser().getId().equals(user.getId()) || user.getRole().getName().equals("ADMIN")) {
+            commentRepository.delete(comment);
+            return true;
         }
 
         return false;

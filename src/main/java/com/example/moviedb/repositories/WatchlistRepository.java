@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface WatchlistRepository extends JpaRepository<Watchlist, Long> {
     List<Watchlist> findByUser(User user);
+    void deleteByUserId(Long userId);
 }

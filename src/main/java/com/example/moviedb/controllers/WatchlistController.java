@@ -1,25 +1,36 @@
 package com.example.moviedb.controllers;
 
+import com.example.moviedb.models.entity.Movie;
+import com.example.moviedb.models.entity.TVSeries;
 import com.example.moviedb.models.entity.Watchlist;
+import com.example.moviedb.services.MoviesService;
+import com.example.moviedb.services.TVSeriesService;
 import com.example.moviedb.services.WatchlistService;
 import com.example.moviedb.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/watchlist")
 public class WatchlistController {
     private final WatchlistService watchlistService;
     private final CurrentUser currentUser;
+    private final MoviesService moviesService;
+    private final TVSeriesService tvSeriesService;
 
     @Autowired
-    public WatchlistController(WatchlistService watchlistService, CurrentUser currentUser) {
+    public WatchlistController(WatchlistService watchlistService, CurrentUser currentUser, MoviesService moviesService, TVSeriesService tvSeriesService) {
         this.watchlistService = watchlistService;
         this.currentUser = currentUser;
+        this.moviesService = moviesService;
+        this.tvSeriesService = tvSeriesService;
     }
 
     @GetMapping("/create-page")
@@ -30,14 +41,6 @@ public class WatchlistController {
         return "create-watchlist";
     }
 
-    @GetMapping("/user-watchlist")
-    public String getWatchlistPage(Model model) {
-        String username = currentUser.getUsername();
-        List<Watchlist> watchlist = watchlistService.getUserWatchlist(username);
-        model.addAttribute("watchlist", watchlist);
-        return "watchlist-info";
-    }
-
     @PostMapping("/create")
     public String createWatchlist(@RequestParam String listName) {
         String username = currentUser.getUsername();
@@ -45,17 +48,29 @@ public class WatchlistController {
         return "redirect:/watchlist/" + newWatchlist.getId();
     }
 
-    @PostMapping("/{listId}/moviesByName")
-    public String addMovieToWatchlist(@PathVariable Long listId, @RequestParam String movieName) {
-        watchlistService.addMovieToWatchlistByName(listId, movieName);
-        return "redirect:/watchlist/user-watchlist";
+    @PostMapping("/{listId}/addItem")
+    public String addItemToWatchlist(@PathVariable Long listId, @RequestParam String itemName, RedirectAttributes redirectAttributes) {
+        Watchlist watchlist = watchlistService.getWatchlistById(listId);
+
+        Optional<Movie> movieOptional = moviesService.findByName(itemName);
+        if (movieOptional.isPresent()) {
+            watchlistService.addMovieToWatchlist(watchlist, movieOptional.get());
+            redirectAttributes.addFlashAttribute("message", "Movie added to watchlist.");
+            return "redirect:/watchlist/" + listId;
+        }
+
+        Optional<TVSeries> seriesOptional = tvSeriesService.findByName(itemName);
+        if (seriesOptional.isPresent()) {
+            watchlistService.addSeriesToWatchlist(watchlist, seriesOptional.get());
+            redirectAttributes.addFlashAttribute("message", "Series added to watchlist.");
+            return "redirect:/watchlist/" + listId;
+        }
+
+        redirectAttributes.addFlashAttribute("errorMessage", "Item not found.");
+        return "redirect:/watchlist/" + listId;
     }
 
-    @PostMapping("/{listId}/seriesByName")
-    public String addSeriesToWatchlist(@PathVariable Long listId, @RequestParam String seriesName) {
-        watchlistService.addSeriesToWatchlistByName(listId, seriesName);
-        return "redirect:/watchlist/user-watchlist";
-    }
+
 
     @GetMapping("/{listId}")
     public String viewWatchlist(@PathVariable Long listId, Model model) {

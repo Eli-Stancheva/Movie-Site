@@ -2,18 +2,24 @@ package com.example.moviedb.services.impl;
 
 import com.example.moviedb.models.DTOs.ActorDTO;
 import com.example.moviedb.models.DTOs.DirectorDTO;
-import com.example.moviedb.models.entity.Actor;
-import com.example.moviedb.models.entity.Director;
-import com.example.moviedb.models.entity.Movie;
-import com.example.moviedb.models.entity.TVSeries;
+import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.DirectorRepository;
 import com.example.moviedb.repositories.MovieRepository;
 import com.example.moviedb.repositories.TVSeriesRepository;
 import com.example.moviedb.services.DirectorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,7 +30,8 @@ public class DirectorServiceImpl implements DirectorService {
     private final DirectorRepository directorRepository;
     private final MovieRepository movieRepository;
     private final TVSeriesRepository tvSeriesRepository;
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public DirectorServiceImpl(DirectorRepository directorRepository, MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository) {
         this.directorRepository = directorRepository;
@@ -123,5 +130,22 @@ public class DirectorServiceImpl implements DirectorService {
         } else {
             throw new IllegalArgumentException("Director not found");
         }
+    }
+
+    @Override
+    public void saveDirectors(String name, MultipartFile file, LocalDate date, String bio) throws IOException {
+        // Запазване на файла на файловата система
+        String fileName = file.getOriginalFilename();
+        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        // Запазване на метаданните в базата данни
+        Director director = new Director();
+        director.setDirectorName(name);
+        director.setDirectorBiography(bio);
+        director.setDirectorBirthdate(date); // уверете се, че имате дата в заявката
+        director.setDirectorImg(fileName);
+
+        directorRepository.save(director);
     }
 }

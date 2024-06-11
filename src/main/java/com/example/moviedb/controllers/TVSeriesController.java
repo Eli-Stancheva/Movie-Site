@@ -6,11 +6,20 @@ import com.example.moviedb.services.*;
 import com.example.moviedb.util.CurrentUser;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,9 +36,11 @@ public class TVSeriesController {
     private final DirectorService directorService;
     private final SeriesActorService seriesActorService;
     private final TVSeriesCategoryService tvSeriesCategoryService;
-
+    private final FileStorageService fileStorageService;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
-    public TVSeriesController(TVSeriesService tvSeriesService, UserService userService, ActorService actorService, CategoryService categoryService, DirectorService directorService, SeriesActorService seriesActorService, TVSeriesCategoryService tvSeriesCategoryService) {
+    public TVSeriesController(TVSeriesService tvSeriesService, UserService userService, ActorService actorService, CategoryService categoryService, DirectorService directorService, SeriesActorService seriesActorService, TVSeriesCategoryService tvSeriesCategoryService, FileStorageService fileStorageService) {
         this.tvSeriesService = tvSeriesService;
         this.userService = userService;
         this.actorService = actorService;
@@ -37,6 +48,7 @@ public class TVSeriesController {
         this.directorService = directorService;
         this.seriesActorService = seriesActorService;
         this.tvSeriesCategoryService = tvSeriesCategoryService;
+        this.fileStorageService = fileStorageService;
     }
 
     @GetMapping("/allSeries")
@@ -152,28 +164,79 @@ public class TVSeriesController {
         return "add-series";
     }
 
+//    @PostMapping("/add")
+//    public String addSeries(@ModelAttribute TVSeriesDTO seriesDTO, @RequestParam Long directorId, Model model) {
+//        tvSeriesService.addSeries(seriesDTO.getTitle(),
+//                seriesDTO.getReleaseDate(),
+//                seriesDTO.getSeasons(),
+//                seriesDTO.getRating(),
+//                seriesDTO.getImageURL(),
+//                seriesDTO.getVideoURL(),
+//                seriesDTO.getDescription(),
+//                directorId);
+//
+//        model.addAttribute("successMessage", "Successfully added!");
+//
+//        return "add-series";
+//    }
+
+
     @PostMapping("/add")
-    public String addSeries(@ModelAttribute TVSeriesDTO seriesDTO, @RequestParam Long directorId, Model model) {
-        tvSeriesService.addSeries(seriesDTO.getTitle(),
-                seriesDTO.getReleaseDate(),
-                seriesDTO.getSeasons(),
-                seriesDTO.getRating(),
-                seriesDTO.getImageURL(),
-                seriesDTO.getVideoURL(),
-                seriesDTO.getDescription(),
-                directorId);
-
-        model.addAttribute("successMessage", "Successfully added!");
-
-        return "add-series";
+    public String addSeries(@RequestParam("title") String title,
+                           @RequestParam("releaseDate") LocalDate date,
+                           @RequestParam("seasons") int seasons,
+                           @RequestParam("rating") double rating,
+                           @RequestParam("imageURL") MultipartFile file,
+                           @RequestParam("videoURL") String videoURL,
+                           @RequestParam("description") String description,
+                           @RequestParam("directorId") Long directorId) throws IOException {
+        tvSeriesService.saveSeries(title, date, seasons, rating, file, videoURL, description, directorId);
+        return "redirect:/series/add-form";
     }
 
     @PostMapping("/update/{id}")
-    public String updateSeries(@PathVariable Long id, @ModelAttribute TVSeriesDTO tvSeriesDTO, @RequestParam("directorId") Long directorId) {
-        tvSeriesService.updateSeries(id, tvSeriesDTO.getTitle(), tvSeriesDTO.getReleaseDate(), tvSeriesDTO.getSeasons(), tvSeriesDTO.getRating(),
-                tvSeriesDTO.getImageURL(), tvSeriesDTO.getVideoURL(), tvSeriesDTO.getDescription(), directorId);
-        return "redirect:/series/{id}";
+    public String updateSeries(@ModelAttribute TVSeries updatedSeries,
+                               @RequestParam("file") MultipartFile file,
+                               @RequestParam("directorId") Long directorId) throws IOException {
+
+        Long seriesId = updatedSeries.getId();
+
+        TVSeriesDTO seriesDTO = tvSeriesService.getSeriesById(seriesId);
+        TVSeries existingSeries = tvSeriesService.convertDtoToSeries(seriesDTO);
+
+        existingSeries.setTitle(updatedSeries.getTitle());
+        existingSeries.setReleaseDate(updatedSeries.getReleaseDate());
+        existingSeries.setSeasons(updatedSeries.getSeasons());
+        existingSeries.setRating(updatedSeries.getRating());
+        existingSeries.setVideoURL(updatedSeries.getVideoURL());
+        existingSeries.setDescription(updatedSeries.getDescription());
+
+        if (!file.isEmpty()) {
+            String oldFileName = existingSeries.getImageURL();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                fileStorageService.deleteFile(oldFileName);
+            }
+
+            String fileName = file.getOriginalFilename();
+            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            existingSeries.setImageURL(fileName);
+        }
+
+        tvSeriesService.updateSeries(existingSeries.getId(),
+                existingSeries.getTitle(),
+                existingSeries.getReleaseDate(),
+                existingSeries.getSeasons(),
+                existingSeries.getRating(),
+                existingSeries.getImageURL(),
+                existingSeries.getVideoURL(),
+                existingSeries.getDescription(),
+                directorId);
+
+        return "redirect:/series/" + seriesId;
     }
+
 
     @PostMapping("/add-actors")
     public String addActorToSeries(@RequestParam("seriesId") Long seriesId, @RequestParam("actorName") String actorName) {
@@ -230,4 +293,5 @@ public class TVSeriesController {
 
         return "redirect:/series/allSeries";
     }
+
 }

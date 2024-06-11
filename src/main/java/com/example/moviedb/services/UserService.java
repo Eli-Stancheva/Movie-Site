@@ -7,22 +7,22 @@ import com.example.moviedb.models.entity.User;
 import com.example.moviedb.util.CurrentUser;
 import com.example.moviedb.util.UserForm;
 
+import java.util.List;
+
 public interface UserService {
     Boolean registerUser(UserRegistrationDTO userRegistrationDTO);
-
     Boolean loginUser(UserLoginDTO userLoginDTO);
-
     void logOutUser();
     Boolean isEmailExists(String email);
-    CurrentUser getCurrentUser();
-
     void updateUser(UserForm userForm);
-
-    void addToWatchlist(String username, Movie movie);
     void requestPasswordReset();
     void updatePassword(String email, String newPassword);
-
     void sendResetPasswordCode(String email);
+    List<User> findAllUsers();
+    CurrentUser getCurrentUser();
+    void deleteUser(Long id);
 
-    User getCurrentUserEntity();
+
+    //void addToWatchlist(String username, Movie movie);
+    //User getCurrentUserEntity();
 }

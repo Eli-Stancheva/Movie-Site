@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head}">
+  <title>Users</title>
+</head>
+<body>
+<nav th:replace="~{fragments/adminNavigation :: adminNavigation}"></nav>
+
+<div class="container mt-4">
+  <h2>Users</h2>
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+      <td th:text="${user.id}">1</td>
+      <td th:text="${user.username}">username</td>
+      <td th:text="${user.email}">email@example.com</td>
+      <td th:text="${user.role.name}">ROLE_USER</td>
+      <td>
+<!--        <form th:action="@{'/admin-delete-user/' + ${user.id}}" method="post" style="display:inline;">-->
+<!--          <button type="submit" class="btn btn-danger btn-sm">Delete</button>-->
+<!--        </form>-->
+        <div th:if="${user.role.name != 'ADMIN'}">
+          <form th:action="@{'/admin-delete-user/' + ${user.id}}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

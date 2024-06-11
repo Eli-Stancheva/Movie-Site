@@ -9,12 +9,12 @@
 <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
 <h1>Add Directors</h1>
 
-<form th:action="@{'/directors/add'}" method="post">
+<form th:action="@{'/directors/add'}" method="post" enctype="multipart/form-data">
   <label for="name">Name:</label><br>
   <input type="text" id="name" name="directorName" required><br>
 
-  <label for="img">Image:</label><br>
-  <input type="text" id="img" name="directorImg" required><br>
+  <label for="image">Image:</label>
+  <input type="file" id="image" name="directorImg" required><br>
 
   <label for="birthdate">Birthdate:</label><br>
   <input type="date" id="birthdate" name="directorBirthdate" required><br>

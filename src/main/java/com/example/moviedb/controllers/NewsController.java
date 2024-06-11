@@ -39,7 +39,6 @@ public class NewsController {
     private final CommentService commentService;
     private final UserService userService;
     private final FileStorageService fileStorageService;
-
     private final NewsRepository newsRepository;
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -93,7 +92,7 @@ public class NewsController {
     public String deleteComment(@PathVariable Long commentId, @RequestParam Long newsId) {
         CurrentUser currentUser = userService.getCurrentUser();
 
-        if (currentUser.isLogged()) {
+        if (currentUser.isLogged() || currentUser.isAdmin()) {
             User user = new User();
             user.setId(currentUser.getId());
 
@@ -130,25 +129,14 @@ public class NewsController {
                                           @RequestParam("newsContent") String content,
                                           @RequestParam("date") LocalDate date,
                                           @RequestParam("image") MultipartFile file) throws IOException {
-            // Запазване на файла на файловата система
-            String fileName = file.getOriginalFilename();
-            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-            // Запазване на метаданните в базата данни
-            News news = new News();
-            news.setNewsTitle(title);
-            news.setNewsContent(content);
-            news.setDate(date); // уверете се, че имате дата в заявката
-            news.setImageName(fileName);
-
-            newsRepository.save(news);
-
-            return "redirect:/news/add-form";
+        newsService.saveNews(title, content, date, file);
+        return "redirect:/news/add-form";
     }
 
+
     @PostMapping("/update")
-    public String updateNews(@ModelAttribute News updatedNews) {
+    public String updateNews(@ModelAttribute News updatedNews,
+                             @RequestParam("image") MultipartFile file) throws IOException {
         Long newsId = updatedNews.getId();
 
         NewsDTO newsDTO = newsService.getNewsById(newsId);
@@ -158,11 +146,27 @@ public class NewsController {
         existingNews.setNewsContent(updatedNews.getNewsContent());
         existingNews.setDate(updatedNews.getDate());
 
+        if (!file.isEmpty()) {
+            // Изтриване на старото изображение, ако съществува
+            String oldFileName = existingNews.getImageName();
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                fileStorageService.deleteFile(oldFileName);
+            }
+
+            // Запазване на новия файл
+            String fileName = file.getOriginalFilename();
+            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            // Актуализиране на името на изображението в обекта
+            existingNews.setImageName(fileName);
+        }
+
+        // Запазване на актуализираните данни в базата
         newsService.updateNews(existingNews);
 
         return "redirect:/news/" + newsId;
     }
-
     @PostMapping("/delete/{id}")
     public String deleteNews(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CurrentUser currentUser = userService.getCurrentUser();

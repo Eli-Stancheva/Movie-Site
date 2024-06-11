@@ -5,12 +5,16 @@ import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.User;
 import com.example.moviedb.models.entity.WatchlistMovie;
 import com.example.moviedb.util.CurrentUser;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface MoviesService {
+    Optional<Movie> findByName(String name);
     List<MovieDTO> getMovies();
 
     MovieDTO getMovieById(Long id);
@@ -64,4 +68,6 @@ public interface MoviesService {
     void deleteMovie(Long id);
 
     boolean isMovieInWatchlist(User user, Long movieId);
+
+    void saveMovies(String title, LocalDate date, double rating, MultipartFile file, String videoURL, String description, Long directorId) throws IOException;
 }

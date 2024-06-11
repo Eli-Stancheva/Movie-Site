@@ -17,7 +17,8 @@
 
 <div class="container" >
   <div class="actor-img">
-    <img th:src="@{${directorById.directorImg}}" style="height: 400px; width: 300px; ">
+    <img th:src="@{'/uploads/' + ${directorById.directorImg}}" style="height: 200px; width: 150px; border-radius: 5px;" alt="Image">
+
   </div>
   <h1 th:text="${directorById.directorName}"></h1>
   <h2>Biography</h2>
@@ -81,8 +82,8 @@
         <h5 class="modal-title">Update Director Information</h5>
       </div>
       <div class="modal-body">
-        <form th:action="@{'/directors/update'}" method="post">
-          <input type="hidden" id="id" name="id" th:value="${directorById.id}">
+        <form th:action="@{'/directors/update'}"  method="post" enctype="multipart/form-data">
+          <input type="hidden" id="id"  name="id" th:value="${directorById.id}">
 
           <label for="directorName">Title:</label><br>
           <input type="text" id="directorName" name="directorName" th:value="${directorById.directorName}"><br>
@@ -93,8 +94,8 @@
           <label for="directorBiography">Biography:</label><br>
           <textarea id="directorBiography" name="directorBiography" th:text="${directorById.directorBiography}"></textarea><br>
 
-          <label for="directorImg">Actor IMG:</label><br>
-          <input type="text" id="directorImg" name="directorImg" th:value="${directorById.directorImg}"><br>
+          <label for="file">Image:</label><br>
+          <input type="file" id="file" name="file" />
 
           <input type="submit" value="Update">
         </form>

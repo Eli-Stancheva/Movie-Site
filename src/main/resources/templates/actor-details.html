@@ -17,7 +17,7 @@
 
 <div class="container" >
     <div class="actor-img">
-        <img th:src="@{${actorById.actorImg}}" style="height: 400px; width: 300px; ">
+        <img th:src="@{'/uploads/' + ${actorById.actorImg}}" style="height: 400px; width: 300px; " alt="Image">
     </div>
     <h1 th:text="${actorById.actorName}"></h1>
     <h2>Biography</h2>
@@ -79,27 +79,31 @@
       <div class="modal-header">
         <h5 class="modal-title">Update Actor Information</h5>
       </div>
-      <div class="modal-body">
-        <form th:action="@{'/actors/update'}" method="post">
-          <input type="hidden" id="id" name="id" th:value="${actorById.id}">
+        <div class="modal-body">
+            <form th:action="@{/actors/update}" method="post" enctype="multipart/form-data">
+                <input type="hidden" id="id" name="id" th:value="${actorById.id}">
 
-          <label for="actorName">Title:</label><br>
-          <input type="text" id="actorName" name="actorName" th:value="${actorById.actorName}"><br>
+                <label for="actorName">Name:</label><br>
+                <input type="text" id="actorName" name="actorName" th:value="${actorById.actorName}" required><br>
 
-          <label for="actorBirthdate">Birthdate:</label><br>
-          <input type="date" id="actorBirthdate" name="actorBirthdate" th:value="${actorById.actorBirthdate}"><br>
+<!--                <label for="img">Image:</label><br>-->
+<!--                <input type="file" id="img" name="actorImg" required><br>-->
 
-          <label for="actorBiography">Biography:</label><br>
-          <textarea id="actorBiography" name="actorBiography" th:text="${actorById.actorBiography}"></textarea><br>
+                <label for="file">Image:</label><br>
+                <input type="file" id="file" name="file" />
 
-          <label for="actorImg">Actor IMG:</label><br>
-          <input type="text" id="actorImg" name="actorImg" th:value="${actorById.actorImg}"><br>
+                <label for="actorBirthdate">Birthdate:</label><br>
+                <input type="date" id="actorBirthdate" name="actorBirthdate" th:value="${actorById.actorBirthdate}" required><br>
 
-          <input type="submit" value="Update">
-        </form>
-      </div>
+                <label for="actorBiography">Biography:</label><br>
+                <textarea id="actorBiography" name="actorBiography" th:text="${actorById.actorBiography}" required></textarea><br>
+
+                <input type="submit" value="Update">
+            </form>
+        </div>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>

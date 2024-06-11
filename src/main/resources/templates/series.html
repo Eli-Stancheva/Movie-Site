@@ -22,7 +22,7 @@
       <div class="col-md-2 mb-4" th:each="series : ${allSeries}">
         <div class="card">
           <a th:href="@{'/series/' + ${series.id}}">
-            <img th:src="@{${series.imageURL}}" class="card-img-top" alt="Movie Image">
+            <img th:src="@{'/uploads/' + ${series.imageURL}}" class="card-img-top"  alt="Image">
           </a>
           <div class="card-body">
             <p class="card-text">

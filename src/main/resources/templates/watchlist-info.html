@@ -13,15 +13,13 @@
     <div th:replace="~{fragments/navigation :: navigation}"></div>
 </div>
 
-<h1>My Watchlist</h1>
 
 <div th:each="watchlist : ${watchlist}">
     <h2 th:text="${watchlist.name}">Watchlist Name</h2>
 
-    <h3>Movies</h3>
-    <form action="#" th:action="@{'/watchlist/' + ${watchlist.id} + '/moviesByName'}" method="post">
-        <label for="movieName">Add Movie by Name:</label>
-        <input type="text" id="movieName" name="movieName" required>
+    <form action="#" th:action="@{'/watchlist/' + ${watchlist.id} + '/addItem'}" method="post">
+        <label for="itemName">Add Movie or Series by Name:</label>
+        <input type="text" id="itemName" name="itemName" required>
         <button type="submit">Add</button>
     </form>
 
@@ -48,16 +46,7 @@
                 </div>
             </div>
         </div>
-    </div>
 
-
-    <form action="#" th:action="@{'/watchlist/' + ${watchlist.id} + '/seriesByName'}" method="post">
-        <label for="seriesName">Add Series by Name:</label>
-        <input type="text" id="seriesName" name="seriesName" required>
-        <button type="submit">Add</button>
-    </form>
-    <h3>Series</h3>
-    <div class="row">
         <div class="col-md-2 mb-4" th:each="s : ${watchlist.series}">
             <div class="card">
                 <a th:href="@{'/series/' + ${s.id}}">

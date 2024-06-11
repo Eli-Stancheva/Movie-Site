@@ -5,12 +5,16 @@ import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.TVSeries;
 import com.example.moviedb.models.entity.User;
 import com.example.moviedb.models.entity.WatchlistSeries;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface TVSeriesService {
     List<TVSeriesDTO> getTVSeries();
+    Optional<TVSeries> findByName(String name);
     List<TVSeriesDTO> getTopRatedSeriesLimited();
     TVSeriesDTO convertToDto(TVSeries series);
     List<TVSeriesDTO> searchSeriesIgnoreCase(String query);
@@ -33,4 +37,6 @@ public interface TVSeriesService {
     void removeActorFromSeries(Long seriesId, Long actorId);
     void removeCategoryFromSeries(Long seriesId, Long categoryId);
     void deleteSeries(Long id);
+    void saveSeries(String title, LocalDate date, int seasons, double rating, MultipartFile file, String videoURL, String description, Long directorId) throws IOException;
+
 }

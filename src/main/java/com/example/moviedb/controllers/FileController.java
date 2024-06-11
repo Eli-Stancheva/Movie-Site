@@ -20,16 +20,6 @@ public class FileController {
     public Map<String, String> uploadFile(@RequestParam("file") MultipartFile file) {
         String fileName = fileStorageService.storeFile(file);
 
-//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path("/api/files/download/")
-//                .path(fileName)
-//                .toUriString();
-
-//        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-//                .path("/img/")
-//                .path(fileName)
-//                .toUriString();
-
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/uploads/")
                 .path(fileName)
@@ -43,14 +33,4 @@ public class FileController {
 
         return response;
     }
-
-//    @GetMapping("/download/{fileName:.+}")
-//    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
-//        Resource resource = fileStorageService.loadFileAsResource(fileName);
-//
-//        return ResponseEntity.ok()
-//                .contentType(org.springframework.http.MediaType.parseMediaType("application/octet-stream"))
-//                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-//                .body(resource);
-//    }
 }

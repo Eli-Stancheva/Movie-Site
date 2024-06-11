@@ -23,7 +23,7 @@
             <div class="col-md-2 mb-4" th:each="movie : ${allMovies}">
                 <div class="card">
                     <a th:href="@{'/movies/' + ${movie.id}}">
-                        <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                        <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top"  alt="Image">
                     </a>
                     <div class="card-body">
                         <p class="card-text">

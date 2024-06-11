@@ -14,4 +14,5 @@ public interface WatchlistSeriesRepository extends JpaRepository<WatchlistSeries
     WatchlistSeries findByUserAndTvSeries(User user, TVSeries series);
     List<WatchlistSeries> findAllByUserId(Long userId);
     void deleteByTvSeriesIdAndUser(Long seriesId, User user);
+    void deleteByUserId(Long userId);
 }

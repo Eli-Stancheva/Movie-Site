@@ -10,7 +10,7 @@
 
 <h1>Add Movie</h1>
 
-<form th:action="@{'/movies/add'}" method="post">
+<form th:action="@{'/movies/add'}" method="post" enctype="multipart/form-data">
   <label for="title">Title:</label><br>
   <input type="text" id="title" name="title" required><br>
 
@@ -20,8 +20,8 @@
   <label for="rating">Rating:</label><br>
   <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" required><br>
 
-  <label for="imageURL">Image URL:</label><br>
-  <input type="text" id="imageURL" name="imageURL" required><br>
+  <label for="imageURL">Image:</label>
+  <input type="file" id="imageURL" name="imageURL" required><br>
 
   <label for="videoURL">Video URL:</label><br>
   <input type="text" id="videoURL" name="videoURL" required><br>

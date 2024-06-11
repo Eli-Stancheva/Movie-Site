@@ -7,9 +7,18 @@ import com.example.moviedb.services.FileStorageService;
 import com.example.moviedb.services.NewsService;
 import com.example.moviedb.repositories.NewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,7 +29,8 @@ public class NewsServiceImpl implements NewsService {
     private final NewsRepository newsRepository;
     private final CommentRepository commentRepository;
     private final FileStorageService fileStorageService;
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public NewsServiceImpl(NewsRepository newsRepository, CommentRepository commentRepository, FileStorageService fileStorageService) {
         this.newsRepository = newsRepository;
@@ -84,12 +94,13 @@ public class NewsServiceImpl implements NewsService {
 
     @Override
     public News convertDtoToNews(NewsDTO newsDTO) {
-        News director = new News();
-        director.setId(newsDTO.getId());
-        director.setNewsTitle(newsDTO.getNewsTitle());
-        director.setNewsContent(newsDTO.getNewsContent());
-        director.setDate(newsDTO.getDate());
-        return director;
+        News news = new News();
+        news.setId(newsDTO.getId());
+        news.setNewsTitle(newsDTO.getNewsTitle());
+        news.setNewsContent(newsDTO.getNewsContent());
+        news.setDate(newsDTO.getDate());
+        news.setImageName(newsDTO.getImage());
+        return news;
     }
 
     @Override
@@ -101,6 +112,7 @@ public class NewsServiceImpl implements NewsService {
             news.setNewsTitle(updatedNews.getNewsTitle());
             news.setNewsContent(updatedNews.getNewsContent());
             news.setDate(updatedNews.getDate());
+            news.setImageName(updatedNews.getImageName());
 
             newsRepository.save(news);
         } else {
@@ -117,16 +129,30 @@ public class NewsServiceImpl implements NewsService {
         if (newsOptional.isPresent()) {
             News news = newsOptional.get();
 
-            // Изтриване на свързания файл
             if (news.getImageName() != null) {
                 fileStorageService.deleteFile(news.getImageName());
             }
 
-            // Изтриване на записа в базата данни
             newsRepository.delete(news);
-//            newsRepository.delete(newsOptional.get());
         } else {
             throw new IllegalArgumentException("News not found");
         }
+    }
+
+    @Override
+    public void saveNews(String title, String content, LocalDate date, MultipartFile file) throws IOException {
+        // Запазване на файла на файловата система
+        String fileName = file.getOriginalFilename();
+        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        // Запазване на метаданните в базата данни
+        News news = new News();
+        news.setNewsTitle(title);
+        news.setNewsContent(content);
+        news.setDate(date); // уверете се, че имате дата в заявката
+        news.setImageName(fileName);
+
+        newsRepository.save(news);
     }
 }

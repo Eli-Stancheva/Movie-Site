@@ -5,9 +5,17 @@ import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.*;
 import com.example.moviedb.services.TVSeriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +31,8 @@ public class TVSeriesServiceImpl implements TVSeriesService {
     private final CategoryRepository categoryRepository;
     private final RatingSeriesFromUserRepository ratingSeriesFromUserRepository;
     private final WatchlistSeriesRepository watchlistSeriesRepository;
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public TVSeriesServiceImpl(TVSeriesRepository tvSeriesRepository, DirectorRepository directorRepository, ActorRepository actorRepository, CategoryRepository categoryRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistSeriesRepository watchlistSeriesRepository) {
         this.tvSeriesRepository = tvSeriesRepository;
@@ -39,6 +49,11 @@ public class TVSeriesServiceImpl implements TVSeriesService {
                 .stream()
                 .map(this::convertToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<TVSeries> findByName(String name) {
+        return tvSeriesRepository.findByTitle(name);
     }
 
     @Override
@@ -309,5 +324,27 @@ public class TVSeriesServiceImpl implements TVSeriesService {
         } else {
             throw new IllegalArgumentException("TV Series not found");
         }
+    }
+
+    @Override
+    public void saveSeries(String title, LocalDate date, int seasons, double rating, MultipartFile file, String videoURL, String description, Long directorId) throws IOException {
+        String fileName = file.getOriginalFilename();
+        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        TVSeries series = new TVSeries();
+        series.setTitle(title);
+        series.setReleaseDate(date);
+        series.setSeasons(seasons);
+        series.setRating(rating);
+        series.setImageURL(fileName);
+        series.setVideoURL(videoURL);
+        series.setDescription(description);
+
+        Director director = directorRepository.findById(directorId)
+                .orElseThrow(() -> new NoSuchElementException("Director not found with id: " + directorId));
+        series.setDirector(director);
+
+        tvSeriesRepository.save(series);
     }
 }
