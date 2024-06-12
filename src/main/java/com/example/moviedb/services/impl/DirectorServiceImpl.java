@@ -1,7 +1,7 @@
 package com.example.moviedb.services.impl;
 
-import com.example.moviedb.models.DTOs.ActorDTO;
 import com.example.moviedb.models.DTOs.DirectorDTO;
+import com.example.moviedb.models.DTOs.DirectorImageDTO;
 import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.DirectorRepository;
 import com.example.moviedb.repositories.MovieRepository;
@@ -66,8 +66,13 @@ public class DirectorServiceImpl implements DirectorService {
                 director.getDirectorName(),
                 director.getDirectorBirthdate(),
                 director.getDirectorBiography(),
-                director.getDirectorImg()
-        );
+                director.getDirectorImg(),
+                director.getImages().stream()
+                        .map(i -> new DirectorImageDTO(
+                                i.getId(),
+                                i.getImage(),
+                                director
+                        )).collect(Collectors.toList()));
     }
     @Override
     public List<Movie> getMoviesByDirectorId(Long directorId) {
@@ -133,19 +138,17 @@ public class DirectorServiceImpl implements DirectorService {
     }
 
     @Override
-    public void saveDirectors(String name, MultipartFile file, LocalDate date, String bio) throws IOException {
-        // Запазване на файла на файловата система
+    public Director saveDirectors(String name, MultipartFile file, LocalDate date, String bio) throws IOException {
         String fileName = file.getOriginalFilename();
         Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
         Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
-        // Запазване на метаданните в базата данни
         Director director = new Director();
         director.setDirectorName(name);
         director.setDirectorBiography(bio);
-        director.setDirectorBirthdate(date); // уверете се, че имате дата в заявката
+        director.setDirectorBirthdate(date);
         director.setDirectorImg(fileName);
 
-        directorRepository.save(director);
+        return directorRepository.save(director);
     }
 }

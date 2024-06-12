@@ -27,7 +27,7 @@
         <div class="col-md-2 mb-4" th:each="movie : ${watchlist.movies}">
             <div class="card">
                 <a th:href="@{'/movies/' + ${movie.id}}">
-                    <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                    <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
                 </a>
                 <div class="card-body">
                     <p class="card-text">
@@ -50,7 +50,7 @@
         <div class="col-md-2 mb-4" th:each="s : ${watchlist.series}">
             <div class="card">
                 <a th:href="@{'/series/' + ${s.id}}">
-                    <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+                    <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
                 </a>
                 <div class="card-body">
                     <p class="card-text">

@@ -14,10 +14,9 @@
 </div>
 
 <div class="container">
-    <div class="blur-background" th:style="'background-image: url(' + ${movieById.imageURL} + ')'"></div>
+    <div class="blur-background" th:style="'background-image: url(/uploads/' + ${movieById.imageURL} + ')'"></div>
     <div class="movie-info">
         <h1 th:text="${movieById.title}"></h1>
-
         <div class="movie-content">
             <div class="movie-img">
                 <img th:src="@{'/uploads/' + ${movieById.imageURL}}" style="height: 400px; width: 300px"  alt="Image">
@@ -27,100 +26,120 @@
             </div>
         </div>
     </div>
-    <div>
-        <div class="categories-container">
-            <div th:each="c : ${movieById.category}">
-                <h4>
+
+    <div class="movie-detail full-width">
+        <div class="movie-main-info">
+            <div class="categories-container">
+                <div th:each="c : ${movieById.category}">
                     <a class="button-6" th:href="@{'/categories/' + ${c.id}}" th:text="${c.categoryName}"></a>
                     <div th:if="${@currentUser.isAdmin()}">
                         <form th:action="@{'/movies/remove-category/' + ${movieById.id} + '/' + ${c.id}}" method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                         </form>
                     </div>
-                </h4>
-            </div>
-        </div>
-
-        <p>Year:
-            <a th:href="@{'/movies/year/' + ${releaseYear}}" th:text="${releaseYear}"></a>
-        </p>
-
-        <p>Rating: <span th:text="${movieById.rating}"></span></p>
-        <p>Director:
-            <a th:href="@{'/directors/' + ${movieById.getDirector().id}}" th:text="${movieById.getDirector().directorName}"></a>
-        </p>
-
-        <p>Actors: </p>
-        <div th:each="a : ${movieById.actors}">
-            <h4>
-                <a th:href="@{'/actors/' + ${a.id}}">
-                    <img th:src="@{${a.actorImg}}" class="actor-img-movie">
-                    <span class="actor-name" th:text="${a.actorName}"></span>
-                </a>
-                <div th:if="${@currentUser.isAdmin()}">
-                    <form th:action="@{'/movies/remove-actor/' + ${movieById.id} + '/' + ${a.id}}" method="post" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </div>
+                <div class="watchlist-btn">
+                    <form th:action="@{'/movies/add/' + ${movieById.id}}" method="post" th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}">
+                        <button type="submit" class="add-to-watchlist-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus bell" viewBox="0 0 16 16">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
+                            </svg>
+                            Add to Movie Watchlist
+                            <div class="arrow">›</div>
+                        </button>
                     </form>
+                    <form action="/users/login" method="get" th:unless="${@currentUser.isLogged()}">
+                        <button type="submit" class="add-to-watchlist-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark-plus bell" viewBox="0 0 16 16">
+                                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4"/>
+                            </svg>
+                            Add to Movie Watchlist
+                            <div class="arrow">›</div>
+                        </button>
+                    </form>
+                    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+                    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
                 </div>
-            </h4>
+            </div>
+
+            <p th:text="${movieById.description}"></p>
+            <hr>
+            <p><b>Year </b><a th:href="@{'/movies/year/' + ${releaseYear}}" th:text="${releaseYear}"></a></p>
+            <hr>
+            <p><b>Director </b><a th:href="@{'/directors/' + ${movieById.getDirector().id}}" th:text="${movieById.getDirector().directorName}"></a></p>
+            <hr>
+            <p><b>Rating</b> <span th:text="${movieById.rating}"></span> / 10</p>
+            <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and averageRating != null and averageRating != 0.0}">Average Rating: <span th:text="${averageRating}"></span></p>
+            <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and userRating != null and userRating != 0}">Your Rating: <span th:text="${userRating}"></span></p>
+
+            <div class="rate-button">
+                <div class="button-wrapper">
+                    <div class="rate-text">Rate</div>
+                    <span class="icon">
+                        <a th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#ratingModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                            </svg>
+                        </a>
+
+                        <a th:href="@{/users/login}" th:unless="${@currentUser.isLogged()}" style="text-decoration: none">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-star" viewBox="0 0 16 16">
+                                <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>
+                            </svg>
+                        </a>
+                    </span>
+                </div>
+            </div>
+            <hr>
+            <h3>Top Cast  </h3>
+            <div class="actors-container">
+                <div class="actor" th:each="a : ${movieById.actors}">
+                    <a th:href="@{'/actors/' + ${a.id}}">
+                        <img th:src="@{'/uploads/' + ${a.actorImg}}" class="actor-img-movie">
+                        <span class="actor-name" th:text="${a.actorName}"></span>
+                    </a>
+                    <div th:if="${@currentUser.isAdmin()}">
+                        <form th:action="@{'/movies/remove-actor/' + ${movieById.id} + '/' + ${a.id}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
+            <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${movieById.id}"  data-toggle="modal" data-target="#addActorModal">Add Actors</button>
+            <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${movieById.id}"  data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+
+            <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/movies/delete/' + ${movieById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this movie?');">
+                <button type="submit" class="btn btn-danger">Delete Movie</button>
+            </form>
         </div>
-
-        <p th:text="${movieById.description}"></p>
-
-        <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and averageRating != null and averageRating != 0.0}">
-                Average Rating: <span th:text="${averageRating}"></span>
-        </p>
-
-        <p th:if="${@currentUser.isLogged() and not @currentUser.isAdmin() and userRating != null and userRating != 0}">
-                Your Rating: <span th:text="${userRating}"></span>
-        </p>
-
-        <button type="button" class="see-more-button" th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#ratingModal">Rate</button>
-        <a th:href="@{/users/login}" class="see-more-button" th:unless="${@currentUser.isLogged()}">Rate</a>
-
-        <form th:action="@{'/movies/add/' + ${movieById.id}}" method="post" th:if="${@currentUser.isLogged()} and not ${@currentUser.isAdmin()}">
-            <button type="submit" class="see-more-button">Add to Movie Watchlist</button>
-        </form>
-
-        <form action="/users/login" method="get" th:unless="${@currentUser.isLogged()}">
-            <button type="submit" class="see-more-button">Add to Movie Watchlist</button>
-        </form>
-
-        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-        <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
-        <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${movieById.id}"  data-toggle="modal" data-target="#addActorModal">Add Actors</button>
-        <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${movieById.id}"  data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
-
-        <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/movies/delete/' + ${movieById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this movie?');">
-            <button type="submit" class="btn btn-danger">Delete Movie</button>
-        </form>
-    </div>
-</div>
-
-<div class="container">
-<div th:if="${not #lists.isEmpty(similarMovies)}">
-    <h2>Similar Movies</h2>
-    <div class="row">
-        <div class="col-md-2 mb-4" th:each="movie : ${similarMovies}">
-            <div class="card">
-                <a th:href="@{'/movies/' + ${movie.id}}">
-                    <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
-                </a>
-                <div class="card-body">
-                    <p class="card-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
-                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                        </svg>
-                        <span class="rating-text" th:text="${movie.rating}"></span>
-                    </p>
-                    <h5 class="card-title" th:text="${movie.title}"></h5>
+        <div class="container-similar">
+            <div th:if="${not #lists.isEmpty(similarMovies)}">
+                <h2>Similar Movies</h2>
+                <div class="row">
+                    <div class="col-md-2 mb-4" th:each="movie : ${similarMovies}">
+                        <div class="card">
+                            <a th:href="@{'/movies/' + ${movie.id}}">
+                                <img  th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                            </a>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                    </svg>
+                                    <span class="rating-text" th:text="${movie.rating}"></span>
+                                </p>
+                                <h5 class="card-title" th:text="${movie.title}"></h5>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
@@ -169,7 +188,6 @@
         </div>
     </div>
 </div>
-
 <div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -188,9 +206,6 @@
 
                     <label for="rating">Rating:</label><br>
                     <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" th:value="${movieById.rating}"><br>
-
-<!--                    <label for="imageURL">Image URL:</label><br>-->
-<!--                    <input type="text" id="imageURL" name="imageURL" th:value="${movieById.imageURL}"><br>-->
 
                     <label for="file">Image:</label><br>
                     <input type="file" id="file" name="file" />
@@ -215,7 +230,6 @@
         </div>
     </div>
 </div>
-
 <div id="addActorModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -235,7 +249,6 @@
         </div>
     </div>
 </div>
-
 <div id="addCategoryModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -255,7 +268,6 @@
         </div>
     </div>
 </div>
-
 <div>
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 </div>

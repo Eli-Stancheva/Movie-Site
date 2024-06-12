@@ -23,5 +23,5 @@ public interface DirectorService {
     Director convertDtoToDirector(DirectorDTO directorDTO);
     void updateDirector(Director updatedDirector);
     void deleteDirector(Long id);
-    void saveDirectors(String name,  MultipartFile file, LocalDate date, String bio) throws IOException;
+    Director saveDirectors(String name,  MultipartFile file, LocalDate date, String bio) throws IOException;
 }

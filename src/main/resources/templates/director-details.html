@@ -32,6 +32,17 @@
     <button type="submit" class="btn btn-danger">Delete Director</button>
   </form>
 
+  <div class="gallery">
+    <h2>Gallery</h2>
+    <div class="row">
+      <div class="col-md-3 mb-4" th:each="image : ${directorById.images}">
+        <div class="card">
+          <img th:src="@{'/uploads/' + ${image.image}}" class="card-img-top" alt="Gallery Image">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="container mt-5">
     <h2>Known For</h2>
     <div class="row">

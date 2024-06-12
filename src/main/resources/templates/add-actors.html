@@ -22,8 +22,45 @@
   <label for="biography">Biography:</label><br>
   <textarea id="biography" name="actorBiography" required></textarea><br>
 
+  <label for="images">Gallery:</label><br>
+  <input type="file" id="images" name="images" multiple><br>
+
   <input type="submit" value="Add">
 </form>
 
 </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head th:replace="~{fragments/head :: head}">-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>Add Actors</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>-->
+<!--<h1>Add Actors</h1>-->
+
+<!--<form th:action="@{/actors/add}" method="post" enctype="multipart/form-data">-->
+<!--  <label for="name">Name:</label><br>-->
+<!--  <input type="text" id="name" name="actorName" required><br>-->
+
+<!--  <label for="img">Image:</label><br>-->
+<!--  <input type="file" id="img" name="actorImg" required><br>-->
+
+<!--  <label for="birthdate">Birthdate:</label><br>-->
+<!--  <input type="date" id="birthdate" name="actorBirthdate" required><br>-->
+
+<!--  <label for="biography">Biography:</label><br>-->
+<!--  <textarea id="biography" name="actorBiography" required></textarea><br>-->
+
+<!--  <label for="images">Gallery:</label><br>-->
+<!--  <input type="file" id="images" name="images[]" multiple><br>-->
+
+<!--  <input type="submit" value="Add">-->
+<!--</form>-->
+
+<!--</body>-->
+<!--</html>-->

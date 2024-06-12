@@ -3,6 +3,9 @@ package com.example.moviedb.services.impl;
 import com.example.moviedb.models.DTOs.*;
 import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.*;
+import com.example.moviedb.services.ActorService;
+import com.example.moviedb.services.CategoryService;
+import com.example.moviedb.services.DirectorService;
 import com.example.moviedb.services.TVSeriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +31,22 @@ public class TVSeriesServiceImpl implements TVSeriesService {
     private final TVSeriesRepository tvSeriesRepository;
     private final DirectorRepository directorRepository;
     private final ActorRepository actorRepository;
+    private final ActorService actorService;
+    private final DirectorService directorService;
+    private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
     private final RatingSeriesFromUserRepository ratingSeriesFromUserRepository;
     private final WatchlistSeriesRepository watchlistSeriesRepository;
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public TVSeriesServiceImpl(TVSeriesRepository tvSeriesRepository, DirectorRepository directorRepository, ActorRepository actorRepository, CategoryRepository categoryRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistSeriesRepository watchlistSeriesRepository) {
+    public TVSeriesServiceImpl(TVSeriesRepository tvSeriesRepository, DirectorRepository directorRepository, ActorRepository actorRepository, ActorService actorService, DirectorService directorService, CategoryService categoryService, CategoryRepository categoryRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistSeriesRepository watchlistSeriesRepository) {
         this.tvSeriesRepository = tvSeriesRepository;
         this.directorRepository = directorRepository;
         this.actorRepository = actorRepository;
+        this.actorService = actorService;
+        this.directorService = directorService;
+        this.categoryService = categoryService;
         this.categoryRepository = categoryRepository;
         this.ratingSeriesFromUserRepository = ratingSeriesFromUserRepository;
         this.watchlistSeriesRepository = watchlistSeriesRepository;
@@ -170,26 +179,9 @@ public class TVSeriesServiceImpl implements TVSeriesService {
                 series.getImageURL(),
                 series.getVideoURL(),
                 series.getDescription(),
-                series.getCategory().stream()
-                        .map(c -> new CategoryDTO(
-                                c.getId(),
-                                c.getCategoryName()
-                        )).collect(Collectors.toSet()),
-                series.getActors().stream()
-                        .map(a -> new ActorDTO(
-                                a.getId(),
-                                a.getActorName(),
-                                a.getActorBirthdate(),
-                                a.getActorBiography(),
-                                a.getActorImg()
-                        )).collect(Collectors.toSet()),
-                new DirectorDTO(
-                        series.getDirector().getId(),
-                        series.getDirector().getDirectorName(),
-                        series.getDirector().getDirectorBirthdate(),
-                        series.getDirector().getDirectorBiography(),
-                        series.getDirector().getDirectorImg()
-        ));
+                series.getCategory().stream().map(categoryService::convertToDto).collect(Collectors.toSet()),
+                series.getActors().stream().map(actorService::convertToDto).collect(Collectors.toSet()),
+                directorService.convertToDto(series.getDirector()));
     }
 
     @Override

@@ -14,17 +14,30 @@
 </div>
 
 
+
+
+<!--th:style="'background-image: url(/uploads/' + ${n.image} + ');'"-->
+<!--<img th:src="@{'/uploads/' + ${n.image}}" class="card-img-top">-->
+
 <div class="container">
   <br><h1>News</h1><br>
-  <div th:each="n : ${news}">
-    <h3><a class="custom-link text-white" th:text="${n.newsTitle}"></a></h3>
-    <p th:text="${#strings.substring(n.newsContent, 0, #strings.indexOf(n.newsContent, '.') + 1)} + '...'"></p>
-    <a class="see-more-button" th:href="@{'/news/' + ${n.id}}">See More</a>
-    <hr>
+
+  <div class="news-container" >
+    <div th:each="n : ${news}">
+
+      <div class="card-news">
+
+        <div class="card-background"></div>
+
+        <div class="card-details-news">
+          <p class="text-title-news" th:text="${n.newsTitle}">Card title</p>
+        </div>
+        <button class="card-button-news">More info</button>
+      </div>
+
+    </div>
   </div>
 </div>
-
-
 
 <div>
   <footer th:replace="~{fragments/footer :: footer}"></footer>

@@ -19,12 +19,14 @@
   <div th:each="actor : ${actors}" class="actor-container">
     <div class="actor-info">
       <div class="actor-img">
-        <img th:src="@{'/uploads/' + ${actor.actorImg}}" style="height: 400px; width: 300px; " alt="Image">
+        <img th:src="@{'/uploads/' + ${actor.actorImg}}" style="height: 200px; width: 150px; border-radius: 5px;" alt="Image">
       </div>
       <div class="actor-details">
         <h2 class="actor-name"><strong><a class="text-decoration-none text-white" th:text="${actor.actorName}"></a></strong></h2>
-        <h4 th:text="${actor.actorBirthdate}"></h4>
-        <a class="see-more-button" th:href="@{'/actors/' + ${actor.id}}">See More</a>
+        <h4 th:text="${actor.actorBirthdate}"></h4><br><br><br><br>
+        <div class="category">
+          <a th:href="@{'/actors/' + ${actor.id}}" class="category-name see-more">See more</a>
+        </div>
       </div>
     </div>
     <hr>

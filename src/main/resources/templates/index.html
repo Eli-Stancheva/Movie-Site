@@ -10,10 +10,6 @@
 
 <div class="nav-container" th:replace="~{fragments/navigation :: navigation}"></div>
 
-<!--<div class="background-section">-->
-<!--    <img src="\src\main\resources\static\img\movies.jpg" alt="Girl in a jacket" width="100%" height="500">-->
-<!--</div>-->
-
 <div class="container-fluid content-section">
     <div class="container">
         <div class="row">
@@ -47,7 +43,7 @@
             <div class="col-md-2 mb-4" th:each="movie : ${bestMoviesLimited}">
                 <div class="card">
                     <a th:href="@{'/movies/' + ${movie.id}}">
-                        <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                        <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
                     </a>
                     <div class="card-body">
                         <p class="card-text">
@@ -71,7 +67,7 @@
             <div class="col-md-2 mb-4" th:each="series : ${bestSeriesLimited}">
                 <div class="card">
                     <a th:href="@{'/series/' + ${series.id}}">
-                        <img th:src="@{${series.imageURL}}" class="card-img-top" alt="Series Image" src="series img">
+                        <img th:src="@{'/uploads/' + ${series.imageURL}}" class="card-img-top" alt="Series Image" src="series img">
                     </a>
                     <div class="card-body">
                         <p class="card-text">
@@ -129,7 +125,7 @@
                 <div class="col-md-2 mb-4" th:each="movie, iterStat : ${watchlistMovies}" th:if="${iterStat.index < 6}">
                     <div class="card">
                         <a th:href="@{'/movies/' + ${movie.id}}">
-                            <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                            <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
                         </a>
                         <div class="card-body">
                             <p class="card-text">

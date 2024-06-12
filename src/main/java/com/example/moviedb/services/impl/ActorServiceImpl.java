@@ -1,7 +1,7 @@
 package com.example.moviedb.services.impl;
 
 import com.example.moviedb.models.DTOs.ActorDTO;
-import com.example.moviedb.models.DTOs.MovieDTO;
+import com.example.moviedb.models.DTOs.ActorImageDTO;
 import com.example.moviedb.models.entity.Actor;
 import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.TVSeries;
@@ -87,7 +87,13 @@ public class ActorServiceImpl implements ActorService {
                 actor.getActorName(),
                 actor.getActorBirthdate(),
                 actor.getActorBiography(),
-                actor.getActorImg()
+                actor.getActorImg(),
+                actor.getImages().stream()
+                        .map(i -> new ActorImageDTO(
+                                i.getId(),
+                                i.getImage(),  // Използвайте правилния гетър за изображението
+                                actor
+                        )).collect(Collectors.toList())  // Завършете стрийма, като съберете резултатите в списък
         );
     }
 
@@ -100,10 +106,32 @@ public class ActorServiceImpl implements ActorService {
                         actor.getActorName(),
                         actor.getActorBirthdate(),
                         actor.getActorBiography(),
-                        actor.getActorImg()
+                        actor.getActorImg(),
+                        actor.getImages().stream()
+                                .map(image -> new ActorImageDTO(
+                                        image.getId(),
+                                        image.getImage(), // Уверете се, че използвате правилния гетър за изображението
+                                        actor
+                                ))
+                                .collect(Collectors.toList()) // Преобразуване на стрийма в списък
                 ))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()); // Събиране на резултатите в множество
     }
+
+
+//    @Override
+//    public Set<ActorDTO> getActors() {
+//        List<Actor> actors = actorRepository.findAll(); // Извличане на данни от базата данни
+//        return actors.stream()
+//                .map(actor -> new ActorDTO(
+//                        actor.getId(),
+//                        actor.getActorName(),
+//                        actor.getActorBirthdate(),
+//                        actor.getActorBiography(),
+//                        actor.getActorImg(),
+//                        images))
+//                .collect(Collectors.toSet());
+//    }
 
     @Override
     public Actor convertDtoToActor(ActorDTO actorDTO) {

@@ -9,17 +9,13 @@
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 
 <div class="container">
-  <div class="row">
-    <div class="col-12">
-      <h2 th:text="'Search result for: ' + ${searchQuery}"></h2>
-    </div>
-  </div>
+  <br><h1 th:text="'Search result for: ' + ${searchQuery}" style="text-align: center"></h1><br>
 
   <div class="row">
     <div class="col-md-2 mb-4" th:each="movie : ${searchResultsMovies}">
       <div class="card">
         <a th:href="@{'/movies/' + ${movie.id}}">
-          <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+          <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
         </a>
         <div class="card-body">
           <p class="card-text">
@@ -38,7 +34,7 @@
     <div class="col-md-2 mb-4" th:each="s : ${searchResultsSeries}">
       <div class="card">
         <a th:href="@{'/series/' + ${s.id}}">
-          <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+          <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
         </a>
         <div class="card-body">
           <p class="card-text">

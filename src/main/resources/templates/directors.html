@@ -23,8 +23,10 @@
       </div>
       <div class="actor-details">
         <h2 class="actor-name"><strong><a class="text-decoration-none text-white" th:text="${director.directorName}"></a></strong></h2>
-        <h4 th:text="${director.directorBirthdate}"></h4>
-        <a class="see-more-button" th:href="@{'/directors/' + ${director.id}}">See More</a>
+        <h4 th:text="${director.directorBirthdate}"></h4><br><br><br><br>
+        <div class="category">
+          <a th:href="@{'/directors/' + ${director.id}}" class="category-name see-more">See more</a>
+        </div>
       </div>
     </div>
     <hr>

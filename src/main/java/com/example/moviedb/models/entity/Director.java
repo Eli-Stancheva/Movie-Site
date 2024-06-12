@@ -3,6 +3,7 @@ package com.example.moviedb.models.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Director")
@@ -23,6 +24,8 @@ public class Director {
     @Column(name = "img")
     private String directorImg;
 
+    @OneToMany(mappedBy = "director", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DirectorImage> images;
     public Director() {}
 
     public Director(String directorName, LocalDate directorBirthdate, String directorBiography, String directorImg) {
@@ -70,5 +73,13 @@ public class Director {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public List<DirectorImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<DirectorImage> images) {
+        this.images = images;
     }
 }

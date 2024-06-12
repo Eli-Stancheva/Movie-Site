@@ -212,31 +212,41 @@ button.close span {
 }
 
 .blur-background {
-    /*position: fixed;*/
-    /*top: 0;*/
-    /*left: 0;*/
-    /*width: 100%;*/
-    /*height: 100%;*/
-    /*z-index: -1;*/
-    /*filter: blur(40px); !* Можете да промените стойността на размазване според вашите предпочитания *!*/
-    /*opacity: 0.5;*/
-
-    height: 200px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background-size: cover;
     background-position: center;
-    filter: blur(8px);
-    -webkit-filter: blur(8px);
+    filter: blur(10px); /* Adjust the blur intensity as needed */
+    z-index: -1; /* Ensure it is behind other content */
 }
 
+.container-similar{
+    margin-left: 20px;
+    margin-top: 30px;
+    color: black;
+}
+
+.movie-main-info hr {
+    width: 98%;
+}
+
+.movie-main-info{
+    margin-left: 20px;
+    color: black;
+}
 .movie-info {
-    /*position: relative;*/
-    /*z-index: 1;*/
     position: relative;
-    z-index: 2;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: -150px;
+    z-index: 1;
+    margin-left: 50px;
+    margin-top: 20px;
+    /*position: relative;*/
+    /*z-index: 2;*/
+    /*padding: 20px;*/
+    /*border-radius: 10px;*/
+    /*margin-top: -150px;*/
 }
 
 .centered-text {
@@ -304,35 +314,93 @@ button.close span {
     text-decoration: none;
 }
 
-.see-more-button {
-    background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
-    border: 0;
-    border-radius: 12px;
-    color: #FFFFFF;
-    cursor: pointer;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 2.5;
-    outline: transparent;
-    padding: 0 1rem;
+
+
+
+
+.rate-button {
+    --width: 100px;
+    --height: 35px;
+    --tooltip-height: 35px;
+    --tooltip-width: 90px;
+    --gap-between-tooltip-to-button: 18px;
+    --button-color: #222;
+    --tooltip-color: #fff;
+    width: var(--width);
+    height: var(--height);
+    background-color: rgb(66, 66, 66);
+    position: relative;
     text-align: center;
+    border-radius: 0.45em;
+    font-family: "Arial", serif;
+    transition: background 0.3s;
+}
+
+.rate-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     text-decoration: none;
-    transition: box-shadow .2s ease-in-out;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    white-space: nowrap;
+    color: white;
 }
 
-.see-more-button:not([disabled]):focus {
-    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+.button-wrapper,.rate-text,.icon {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    color: #fff;
 }
 
-.see-more-button:not([disabled]):hover {
-    box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+.rate-text {
+    top: 0
 }
+
+.rate-text,.icon {
+    transition: top 0.5s;
+}
+
+.icon {
+    color: #fff;
+    top: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.rate-button:hover {
+    background: #222;
+}
+
+.rate-button:hover .rate-text {
+    top: -100%;
+}
+
+.rate-button:hover .icon {
+    top: 0;
+}
+
+.rate-button:hover:before,.rate-button:hover:after {
+    opacity: 1;
+    visibility: visible;
+}
+
+.rate-button:hover:after {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button) - 20px);
+}
+
+.rate-button:hover:before {
+    bottom: calc(var(--height) + var(--gap-between-tooltip-to-button));
+}
+
+
 
 .actor-info {
     display: flex;
@@ -352,7 +420,35 @@ button.close span {
 
 .actor-name {
     margin-bottom: 5px;
+    text-decoration: none;
 }
+
+.actors-container {
+    display: flex;
+    flex-wrap: wrap; /* Allows actors to wrap to the next line if there isn't enough space */
+    gap: 10px; /* Space between actor cards */
+}
+
+.actor {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.actor-img-movie {
+    width: 90px; /* Размер на изображението */
+    height: 120px; /* Размер на изображението */
+    border-radius: 10px; /* Леко заоблени ъгли */
+    object-fit: cover;
+    padding: 5px; /* Празно пространство около изображението */
+    border: 2px solid grey; /* Граница за по-добър вид */
+    margin-right: 10px;
+    box-sizing: border-box; /* Уверете се, че padding не променя размера на самото изображение */
+}
+
+
+
+
 
 .login-container{
     display: flex;
@@ -484,16 +580,23 @@ button.close span {
     display: flex;
     flex-wrap: wrap; /* Ако искате бутоните да се прехвърлят на следващ ред при недостиг на място */
     gap: 10px; /* Разстояние между бутоните */
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.watchlist-btn{
+    margin-left: auto; /* Aligns the watchlist button to the right */
+
 }
 
 .button-6 {
     align-items: center;
-    background-color: transparent;
+    background-color: #8684844f;
     border: 1px solid grey;
     border-radius: 5px;
     box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
     box-sizing: border-box;
-    color: white;
+    color: black;
     cursor: pointer;
     display: inline-flex;
     font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -501,7 +604,7 @@ button.close span {
     font-weight: 600;
     justify-content: center;
     line-height: 1.25;
-    margin: 0;
+    margin: 0px;
     min-height: 1rem;
     /*padding: calc(.875rem - 1px) calc(1.5rem - 1px);*/
     padding: calc(.5rem - 1px) calc(1rem - 1px); /* Намалено padding */
@@ -599,27 +702,89 @@ button.close span {
 }
 
 
-.actor-img-movie {
-    width: 70px; /* Размер на изображението */
-    height: 70px; /* Размер на изображението */
-    border-radius: 10px; /* Леко заоблени ъгли */
-    object-fit: cover;
-    padding: 5px; /* Празно пространство около изображението */
-    border: 2px solid #ddd; /* Граница за по-добър вид */
-    margin-right: 10px;
-    box-sizing: border-box; /* Уверете се, че padding не променя размера на самото изображение */
-}
-
-.actor-name {
-    color: black;
-    transition: color 0.3s; /* Плавен преход на цвета при ховър */
-    text-decoration: none;
- }
-
-.actor-name:hover {
-    color: grey; /* Цвят при ховър */
-}
-
 .bio-info{
     text-align: justify;
 }
+
+
+
+.movie-detail {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box; /* Ensures padding is included in the width */
+}
+
+.full-width {
+    background-color: honeydew;
+    width: 1285px;
+    margin-left: -84px; /* Adjust this if there's any default padding/margin on the container */
+    margin-bottom: -20px;
+    /*width: calc(100% + 30px); !* Adjust based on margin *!*/
+    box-sizing: border-box;
+}
+
+
+.add-to-watchlist-button {
+    width: 250px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding: 0px 15px;
+    background-color: rgb(66, 66, 66);
+    border-radius: 10px;
+    color: white;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    transition-duration: .2s;
+    margin-right: 25px;
+}
+
+.bell {
+    width: 13px;
+}
+
+.bell path {
+    fill: rgb(0, 206, 62);
+}
+
+.arrow {
+    position: absolute;
+    right: 0;
+    width: 30px;
+    height: 100%;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-to-watchlist-button:hover {
+    background-color: rgb(77, 77, 77);
+    transition-duration: .2s;
+}
+
+.add-to-watchlist-button:hover .arrow {
+    animation: slide-right .6s ease-out both;
+}
+/* arrow animation */
+@keyframes slide-right {
+    0% {
+        transform: translateX(-10px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.add-to-watchlist-button:active {
+    transform: translate(1px , 1px);
+    transition-duration: .2s;
+}
+
+

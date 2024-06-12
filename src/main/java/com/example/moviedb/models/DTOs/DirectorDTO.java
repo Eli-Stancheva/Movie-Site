@@ -1,8 +1,7 @@
 package com.example.moviedb.models.DTOs;
 
-import jakarta.persistence.Column;
-
 import java.time.LocalDate;
+import java.util.List;
 
 public class DirectorDTO {
     private Long id;
@@ -10,13 +9,14 @@ public class DirectorDTO {
     private LocalDate directorBirthdate;
     private String directorBiography;
     private String directorImg;
-
-    public DirectorDTO(Long id, String directorName, LocalDate directorBirthdate, String directorBiography, String directorImg) {
+    private List<DirectorImageDTO> images;
+    public DirectorDTO(Long id, String directorName, LocalDate directorBirthdate, String directorBiography, String directorImg, List<DirectorImageDTO> images) {
         this.id = id;
         this.directorName = directorName;
         this.directorBirthdate = directorBirthdate;
         this.directorBiography = directorBiography;
         this.directorImg = directorImg;
+        this.images = images;
     }
 
     public Long getId() {
@@ -57,5 +57,13 @@ public class DirectorDTO {
 
     public void setDirectorImg(String directorImg) {
         this.directorImg = directorImg;
+    }
+
+    public List<DirectorImageDTO> getImages() {
+        return images;
+    }
+
+    public void setImages(List<DirectorImageDTO> images) {
+        this.images = images;
     }
 }

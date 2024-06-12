@@ -3,6 +3,7 @@ package com.example.moviedb.models.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "Actor")
@@ -22,6 +23,9 @@ public class Actor {
 
     @Column(name = "actor_img")
     private String actorImg;
+
+    @OneToMany(mappedBy = "actor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ActorImage> images;
 
     public Actor() {}
 
@@ -69,5 +73,13 @@ public class Actor {
 
     public void setActorImg(String actorImg) {
         this.actorImg = actorImg;
+    }
+
+    public List<ActorImage> getImages() {
+        return images;
+    }
+
+    public void setImages(List<ActorImage> images) {
+        this.images = images;
     }
 }

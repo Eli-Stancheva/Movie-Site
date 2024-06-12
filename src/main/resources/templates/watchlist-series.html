@@ -19,7 +19,7 @@
     <ul>
       <li th:each="series : ${watchlistSeries}">
         <div class="m-info">
-          <img th:src="@{${series.imageURL}}" alt="Movie Image">
+          <img th:src="@{'/uploads/' + ${series.imageURL}}" alt="Movie Image">
           <div class="movie-description">
             <a th:href="@{'/series/' + ${series.id}}" class="text-decoration-none text-white">
               <h3 class="m-0 " th:text="${series.title}"></h3>

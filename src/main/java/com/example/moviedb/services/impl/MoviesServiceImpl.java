@@ -1,13 +1,14 @@
 package com.example.moviedb.services.impl;
 
-import com.example.moviedb.models.DTOs.ActorDTO;
 import com.example.moviedb.models.DTOs.CategoryDTO;
 import com.example.moviedb.models.DTOs.DirectorDTO;
 import com.example.moviedb.models.DTOs.MovieDTO;
 import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.*;
+import com.example.moviedb.services.ActorService;
+import com.example.moviedb.services.CategoryService;
+import com.example.moviedb.services.DirectorService;
 import com.example.moviedb.services.MoviesService;
-import com.example.moviedb.util.CurrentUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,9 @@ public class MoviesServiceImpl implements MoviesService {
     private final TVSeriesRepository tvSeriesRepository;
     private final CategoryRepository categoryRepository;
     private final ActorRepository actorRepository;
+    private final ActorService actorService;
+    private final DirectorService directorService;
+    private final CategoryService categoryService;
     private final DirectorRepository directorRepository;
     private final RatingFromUserRepository ratingFromUserRepository;
     private final RatingSeriesFromUserRepository ratingSeriesFromUserRepository;
@@ -38,11 +42,14 @@ public class MoviesServiceImpl implements MoviesService {
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public MoviesServiceImpl(MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository, CategoryRepository categoryRepository, ActorRepository actorRepository, DirectorRepository directorRepository, RatingFromUserRepository ratingFromUserRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistMovieRepository watchlistMovieRepository, List<MovieDTO> movies){
+    public MoviesServiceImpl(MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository, CategoryRepository categoryRepository, ActorRepository actorRepository, ActorService actorService, DirectorService directorService, CategoryService categoryService, DirectorRepository directorRepository, RatingFromUserRepository ratingFromUserRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistMovieRepository watchlistMovieRepository, List<MovieDTO> movies){
         this.movieRepository = movieRepository;
         this.tvSeriesRepository = tvSeriesRepository;
         this.categoryRepository = categoryRepository;
         this.actorRepository = actorRepository;
+        this.actorService = actorService;
+        this.directorService = directorService;
+        this.categoryService = categoryService;
         this.directorRepository = directorRepository;
         this.ratingFromUserRepository = ratingFromUserRepository;
         this.ratingSeriesFromUserRepository = ratingSeriesFromUserRepository;
@@ -84,26 +91,9 @@ public class MoviesServiceImpl implements MoviesService {
                 movie.getImageURL(),
                 movie.getVideoURL(),
                 movie.getDescription(),
-                movie.getCategory().stream()
-                        .map(c -> new CategoryDTO(
-                                c.getId(),
-                                c.getCategoryName()
-                        )).collect(Collectors.toSet()),
-                movie.getActors().stream()
-                .map(a -> new ActorDTO(
-                        a.getId(),
-                        a.getActorName(),
-                        a.getActorBirthdate(),
-                        a.getActorBiography(),
-                        a.getActorImg()
-                )).collect(Collectors.toSet()),
-                new DirectorDTO(
-                        movie.getDirector().getId(),
-                        movie.getDirector().getDirectorName(),
-                        movie.getDirector().getDirectorBirthdate(),
-                        movie.getDirector().getDirectorBiography(),
-                        movie.getDirector().getDirectorImg()
-                ));
+                movie.getCategory().stream().map(categoryService::convertToDto).collect(Collectors.toSet()),
+                movie.getActors().stream().map(actorService::convertToDto).collect(Collectors.toSet()),
+                directorService.convertToDto(movie.getDirector()));
     }
 
     @Override

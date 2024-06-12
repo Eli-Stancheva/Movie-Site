@@ -203,7 +203,6 @@ public class MoviesController {
         existingMovie.setRating(updatedMovie.getRating());
         existingMovie.setVideoURL(updatedMovie.getVideoURL());
         existingMovie.setDescription(updatedMovie.getDescription());
-        // existingMovie.setDirector(updatedMovie.getDirector());
 
         if (!file.isEmpty()) {
             String oldFileName = existingMovie.getImageURL();

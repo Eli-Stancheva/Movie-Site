@@ -7,13 +7,13 @@
 <div th:replace="~{fragments/navigation :: navigation}"></div>
 <div class="container">
 
-  <h1 th:text="${categoryName}"></h1>
+  <br><h1 th:text="${categoryName}"></h1><br>
 
   <div class="row">
     <div class="col-md-2 mb-4" th:each="movie : ${movies}">
       <div class="card">
         <a th:href="@{'/movies/' + ${movie.id}}">
-          <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+          <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
         </a>
         <div class="card-body">
           <p class="card-text">
@@ -30,7 +30,7 @@
     <div class="col-md-2 mb-4" th:each="s : ${series}">
       <div class="card">
         <a th:href="@{'/series/' + ${s.id}}">
-          <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+          <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
         </a>
         <div class="card-body">
           <p class="card-text">

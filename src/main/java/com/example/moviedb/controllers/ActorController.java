@@ -1,9 +1,8 @@
 package com.example.moviedb.controllers;
 
 import com.example.moviedb.models.DTOs.ActorDTO;
-import com.example.moviedb.models.DTOs.DirectorDTO;
-import com.example.moviedb.models.DTOs.NewsDTO;
 import com.example.moviedb.models.entity.*;
+import com.example.moviedb.services.ActorImageService;
 import com.example.moviedb.services.ActorService;
 import com.example.moviedb.services.FileStorageService;
 import com.example.moviedb.services.UserService;
@@ -32,13 +31,15 @@ public class ActorController {
     private final ActorService actorService;
     private final UserService userService;
     private final FileStorageService fileStorageService;
+    private final ActorImageService actorImageService;
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public ActorController(ActorService actorService, UserService userService, FileStorageService fileStorageService) {
+    public ActorController(ActorService actorService, UserService userService, FileStorageService fileStorageService, ActorImageService actorImageService) {
         this.actorService = actorService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
+        this.actorImageService = actorImageService;
     }
 
     @GetMapping("/allActors")
@@ -74,13 +75,13 @@ public class ActorController {
     public String addActors(@RequestParam("actorName") String name,
                             @RequestParam("actorImg") MultipartFile file,
                             @RequestParam("actorBirthdate") LocalDate date,
-                            @RequestParam("actorBiography") String bio) throws IOException {
-        // Запазване на файла на файловата система
+                            @RequestParam("actorBiography") String bio,
+                            @RequestParam("images") List<MultipartFile> files) throws IOException {
+
         String fileName = file.getOriginalFilename();
         Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
         Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
-        // Запазване на метаданните в базата данни
         Actor actor = new Actor();
         actor.setActorName(name);
         actor.setActorImg(fileName);
@@ -88,10 +89,10 @@ public class ActorController {
         actor.setActorBiography(bio);
 
         actorService.save(actor);
+        actorImageService.saveGalleryImages(files, actor);
 
         return "redirect:/actors/add-form";
     }
-
 
     @PostMapping("/update")
     public String updateActors(@ModelAttribute Actor updatedActor, @RequestParam("file") MultipartFile file) throws IOException {
@@ -123,42 +124,6 @@ public class ActorController {
 
         return "redirect:/actors/" + actorId;
     }
-
-//    @PostMapping("/update")
-//    public String updateActors(@ModelAttribute Actor updatedActors,
-//                             @RequestParam("actorImg") MultipartFile file) throws IOException {
-//        Long actorsId = updatedActors.getId();
-//
-//        ActorDTO actorDTO = actorService.getActorById(actorsId);
-//        Actor existingActors = actorService.convertDtoToActor(actorDTO);
-//
-//        // Актуализиране на заглавието, съдържанието и датата
-//        existingActors.setActorName(updatedActors.getActorName());
-//        existingActors.setActorBirthdate(updatedActors.getActorBirthdate());
-//        existingActors.setActorBiography(updatedActors.getActorBiography());
-//
-//        // Проверка дали има ново изображение
-//        if (!file.isEmpty()) {
-//            // Изтриване на старото изображение, ако съществува
-//            String oldFileName = existingActors.getActorImg();
-//            if (oldFileName != null && !oldFileName.isEmpty()) {
-//                fileStorageService.deleteFile(oldFileName);
-//            }
-//
-//            // Запазване на новия файл
-//            String fileName = file.getOriginalFilename();
-//            Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-//            Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-//
-//            // Актуализиране на името на изображението в обекта
-//            existingActors.setActorImg(fileName);
-//        }
-//
-//        // Запазване на актуализираните данни в базата
-//        actorService.updateActor(existingActors);
-//
-//        return "redirect:/actors/" + actorsId;
-//    }
 
     @PostMapping("/delete/{id}")
     public String deleteActor(@PathVariable Long id, RedirectAttributes redirectAttributes) {

@@ -1,14 +1,10 @@
 package com.example.moviedb.controllers;
 
 import com.example.moviedb.models.DTOs.DirectorDTO;
-import com.example.moviedb.models.DTOs.NewsDTO;
 import com.example.moviedb.models.entity.Director;
 import com.example.moviedb.models.entity.Movie;
-import com.example.moviedb.models.entity.News;
 import com.example.moviedb.models.entity.TVSeries;
-import com.example.moviedb.services.DirectorService;
-import com.example.moviedb.services.FileStorageService;
-import com.example.moviedb.services.UserService;
+import com.example.moviedb.services.*;
 import com.example.moviedb.util.CurrentUser;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +30,15 @@ public class DirectorController {
     private final DirectorService directorService;
     private final UserService userService;
     private final FileStorageService fileStorageService;
+    private final DirectorImageService directorImageService;
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public DirectorController(DirectorService directorService, UserService userService, FileStorageService fileStorageService) {
+    public DirectorController(DirectorService directorService, UserService userService, FileStorageService fileStorageService, DirectorImageService directorImageService) {
         this.directorService = directorService;
         this.userService = userService;
         this.fileStorageService = fileStorageService;
+        this.directorImageService = directorImageService;
     }
 
     @GetMapping("/allDirectors")
@@ -80,45 +78,21 @@ public class DirectorController {
         return "add-directors";
     }
 
-//    @PostMapping("/add")
-//    public String addDirectors(@ModelAttribute DirectorDTO directorDTO) {
-//        String name = directorDTO.getDirectorName();
-//        LocalDate birth = directorDTO.getDirectorBirthdate();
-//        String bio = directorDTO.getDirectorBiography();
-//        String img = directorDTO.getDirectorImg();
-//
-//        Director director = new Director(name, birth, bio, img);
-//
-//        directorService.addDirector(director);
-//
-//        return "add-directors";
-//    }
-
     @PostMapping("/add")
     public String addDirectors(@RequestParam("directorName") String name,
-                          @RequestParam("directorImg") MultipartFile file,
-                          @RequestParam("directorBirthdate") LocalDate date,
-                          @RequestParam("directorBiography") String bio) throws IOException {
+                               @RequestParam("directorImg") MultipartFile file,
+                               @RequestParam("directorBirthdate") LocalDate date,
+                               @RequestParam("directorBiography") String bio,
+                               @RequestParam("images") List<MultipartFile> files) throws IOException {
 
-        directorService.saveDirectors(name, file, date, bio);
+//        directorService.saveDirectors(name, file, date, bio);
+//        directorImageService.saveGalleryImages(files,director);
+        Director director = directorService.saveDirectors(name, file, date, bio);
+
+        // Извикване на метод за запазване на галерията с изображения
+        directorImageService.saveGalleryImages(files, director);
         return "redirect:/directors/add-form";
     }
-//    @PostMapping("/update")
-//    public String updateDirector(@ModelAttribute Director updatedDirector) {
-//        Long directorId = updatedDirector.getId();
-//
-//        DirectorDTO directorDTO = directorService.getDirectorById(directorId);
-//        Director existingDirector = directorService.convertDtoToDirector(directorDTO);
-//
-//        existingDirector.setDirectorName(updatedDirector.getDirectorName());
-//        existingDirector.setDirectorBirthdate(updatedDirector.getDirectorBirthdate());
-//        existingDirector.setDirectorBiography(updatedDirector.getDirectorBiography());
-//        existingDirector.setDirectorImg(updatedDirector.getDirectorImg());
-//
-//        directorService.updateDirector(existingDirector);
-//
-//        return "redirect:/directors/" + directorId;
-//    }
 
     @PostMapping("/update")
     public String updateDirector(@ModelAttribute Director updatedDirector, @RequestParam("file") MultipartFile file) throws IOException {
