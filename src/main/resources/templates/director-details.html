@@ -2,8 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head}">
+  <title>Directors</title>
 
-  <title>Movie</title>
 </head>
 <body>
 
@@ -14,17 +14,17 @@
   <div th:replace="~{fragments/navigation :: navigation}"></div>
 </div>
 
-
-<div class="container" >
-  <div class="actor-img">
-    <img th:src="@{'/uploads/' + ${directorById.directorImg}}" style="height: 200px; width: 150px; border-radius: 5px;" alt="Image">
-
+<div class="container">
+  <div class="director-info">
+    <div class="actor-img">
+      <img th:src="@{'/uploads/' + ${directorById.directorImg}}" style="height: 250px; width: 200px; border-radius: 5px;" alt="Image">
+    </div>
+    <div class="director-details">
+      <h1 th:text="${directorById.directorName}"></h1>
+      <p th:text="${directorById.directorBirthdate}"></p>
+    </div>
   </div>
-  <h1 th:text="${directorById.directorName}"></h1>
   <h2>Biography</h2>
-
-  <p th:text="${directorById.directorBirthdate}"></p>
-
   <p th:text="${directorById.directorBiography}" class="bio-info"></p>
 
   <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
@@ -32,24 +32,13 @@
     <button type="submit" class="btn btn-danger">Delete Director</button>
   </form>
 
-  <div class="gallery">
-    <h2>Gallery</h2>
-    <div class="row">
-      <div class="col-md-3 mb-4" th:each="image : ${directorById.images}">
-        <div class="card">
-          <img th:src="@{'/uploads/' + ${image.image}}" class="card-img-top" alt="Gallery Image">
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="container mt-5">
+  <div class="known-for-container">
     <h2>Known For</h2>
     <div class="row">
       <div class="col-md-2 mb-4" th:each="movie : ${directorMovies}">
         <div class="card">
           <a th:href="@{'/movies/' + ${movie.id}}">
-            <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+            <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
           </a>
           <div class="card-body">
             <p class="card-text">
@@ -67,8 +56,8 @@
     <div class="row">
       <div class="col-md-2 mb-4" th:each="s : ${directorSeries}">
         <div class="card">
-          <a th:href="@{'/series/' + ${s.id}}">
-            <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
+          <a th:src="@{'/uploads/' + ${s.imageURL}}">
+            <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
           </a>
           <div class="card-body">
             <p class="card-text">
@@ -83,6 +72,31 @@
       </div>
     </div>
   </div>
+
+  <button th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" type="button" class="btn btn-primary"  data-toggle="modal" data-target="#addImagesForGallery">Add Images For Gallery</button>
+
+  <div class="gallery">
+    <h2>Gallery</h2>
+    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        <div th:each="image, iterStat : ${directorById.images}" th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+          <div class="d-block w-100 image-container">
+            <img th:src="@{'/uploads/' + ${image.image}}"  class="d-block mx-auto" alt="Gallery Image">
+            <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/directors/deleteGalleryImage/' + ${directorById.id} + '/' + ${image.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this image?');">
+              <button type="submit" class="btn btn-danger">X</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </a>
+    </div>
+  </div>
+
 </div>
 
 
@@ -96,17 +110,17 @@
         <form th:action="@{'/directors/update'}"  method="post" enctype="multipart/form-data">
           <input type="hidden" id="id"  name="id" th:value="${directorById.id}">
 
-          <label for="directorName">Title:</label><br>
+          <label for="directorName">Name:</label><br>
           <input type="text" id="directorName" name="directorName" th:value="${directorById.directorName}"><br>
+
+          <label for="file">Image:</label><br>
+          <input type="file" id="file" name="file"/>
 
           <label for="directorBirthdate">Birthdate:</label><br>
           <input type="date" id="directorBirthdate" name="directorBirthdate" th:value="${directorById.directorBirthdate}"><br>
 
           <label for="directorBiography">Biography:</label><br>
           <textarea id="directorBiography" name="directorBiography" th:text="${directorById.directorBiography}"></textarea><br>
-
-          <label for="file">Image:</label><br>
-          <input type="file" id="file" name="file" />
 
           <input type="submit" value="Update">
         </form>
@@ -115,5 +129,26 @@
   </div>
 </div>
 
+<div id="addImagesForGallery" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Images For Gallery</h5>
+      </div>
+      <div class="modal-body">
+        <form th:action="@{'/directors/addGalleryImages/' + ${directorById.id}}" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="images" class="col-form-label">Select Images:</label>
+            <input type="file" id="images" name="images" multiple accept="image/*" class="form-control-file">
+          </div>
+          <button type="submit" class="btn btn-primary">Upload Images</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
 </body>
 </html>

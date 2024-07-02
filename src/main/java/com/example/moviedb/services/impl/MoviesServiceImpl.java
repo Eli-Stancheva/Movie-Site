@@ -1,7 +1,5 @@
 package com.example.moviedb.services.impl;
 
-import com.example.moviedb.models.DTOs.CategoryDTO;
-import com.example.moviedb.models.DTOs.DirectorDTO;
 import com.example.moviedb.models.DTOs.MovieDTO;
 import com.example.moviedb.models.entity.*;
 import com.example.moviedb.repositories.*;
@@ -38,11 +36,14 @@ public class MoviesServiceImpl implements MoviesService {
     private final RatingFromUserRepository ratingFromUserRepository;
     private final RatingSeriesFromUserRepository ratingSeriesFromUserRepository;
     private final WatchlistMovieRepository watchlistMovieRepository;
+    private final MovieActorRepository movieActorRepository;
+    private final MovieCategoryRepository movieCategoryRepository;
+    private final WatchlistRepository watchlistRepository;
     private final List<MovieDTO> movies;
     @Value("${file.upload-dir}")
     private String uploadDir;
     @Autowired
-    public MoviesServiceImpl(MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository, CategoryRepository categoryRepository, ActorRepository actorRepository, ActorService actorService, DirectorService directorService, CategoryService categoryService, DirectorRepository directorRepository, RatingFromUserRepository ratingFromUserRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistMovieRepository watchlistMovieRepository, List<MovieDTO> movies){
+    public MoviesServiceImpl(MovieRepository movieRepository, TVSeriesRepository tvSeriesRepository, CategoryRepository categoryRepository, ActorRepository actorRepository, ActorService actorService, DirectorService directorService, CategoryService categoryService, DirectorRepository directorRepository, RatingFromUserRepository ratingFromUserRepository, RatingSeriesFromUserRepository ratingSeriesFromUserRepository, WatchlistMovieRepository watchlistMovieRepository, MovieActorRepository movieActorRepository, MovieCategoryRepository movieCategoryRepository, WatchlistRepository watchlistRepository, List<MovieDTO> movies){
         this.movieRepository = movieRepository;
         this.tvSeriesRepository = tvSeriesRepository;
         this.categoryRepository = categoryRepository;
@@ -54,6 +55,9 @@ public class MoviesServiceImpl implements MoviesService {
         this.ratingFromUserRepository = ratingFromUserRepository;
         this.ratingSeriesFromUserRepository = ratingSeriesFromUserRepository;
         this.watchlistMovieRepository = watchlistMovieRepository;
+        this.movieActorRepository = movieActorRepository;
+        this.movieCategoryRepository = movieCategoryRepository;
+        this.watchlistRepository = watchlistRepository;
         this.movies = movies;
     }
 
@@ -143,15 +147,6 @@ public class MoviesServiceImpl implements MoviesService {
         }
         return convertToDto(newestMovie);
     }
-
-//    @Override
-//    public List<MovieDTO> searchMovieIgnoreCase(String query) {
-//        return this.movieRepository
-//                .findByTitleContainingIgnoreCase(query)
-//                .stream()
-//                .map(this::convertToDto)
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public List<MovieDTO> searchMovieByTitleOrActorOrDirectorOrCategory(String query) {

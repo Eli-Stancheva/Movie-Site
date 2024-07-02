@@ -24,9 +24,10 @@
                         <a th:href="@{'/movies/' + ${movie.id}}" class="text-decoration-none text-white">
                             <h3 class="m-0" th:text="${movie.title}"></h3>
                         </a><br>
-                        <form th:action="@{'/movies/delete-watchlist-movie/' + ${movie.id}}" method="post">
-                            <button class="see-more-button" type="submit">Remove</button>
+                        <form th:action="@{'/movies/delete-watchlist-movie/' + ${movie.id}}" method="post" onsubmit="return confirm('Are you sure you want to remove this movie?');">
+                            <button class="btn btn-danger" type="submit">Remove</button>
                         </form>
+
                     </div>
                 </div><br>
             </li>
@@ -34,9 +35,9 @@
     </div>
 </div>
 
-<!--<div>-->
-<!--  <footer th:replace="~{fragments/footer :: footer}"></footer>-->
-<!--</div>-->
+<div>
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</div>
 
 </body>
 </html>

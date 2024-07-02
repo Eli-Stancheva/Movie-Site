@@ -33,9 +33,14 @@
       <div class="categories-container">
         <div th:each="c : ${seriesById.category}">
             <a class="button-6" th:href="@{'/categories/' + ${c.id}}" th:text="${c.categoryName}"></a>
-            <div th:if="${@currentUser.isAdmin()}">
+            <div class="admin-delete-btn" th:if="${@currentUser.isAdmin()}">
               <form th:action="@{'/series/remove-category/' + ${seriesById.id} + '/' + ${c.id}}" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                <button class="delete-button-reply">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-trash" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                  </svg>
+                </button>
               </form>
             </div>
         </div>
@@ -69,6 +74,8 @@
       <hr>
       <p><b>Year </b><a th:href="@{'/movies/year/' + ${releaseYear}}" th:text="${releaseYear}"></a></p>
       <hr>
+      <p th:text="${seriesById.seasons}"><b>Seasons </b></p>
+      <hr>
       <p><b>Director </b><a th:href="@{'/directors/' + ${seriesById.getDirector().id}}" th:text="${seriesById.getDirector().directorName}"></a></p>
       <hr>
       <p><b>Rating</b> <span th:text="${seriesById.rating}"></span> / 10</p>
@@ -94,7 +101,7 @@
         </div>
       </div>
       <hr>
-      <h3>Top Cast  </h3>
+      <h3>Top Cast</h3>
       <div class="actors-container">
         <div class="actor" th:each="a : ${seriesById.actors}">
           <a th:href="@{'/actors/' + ${a.id}}">
@@ -103,7 +110,12 @@
           </a>
           <div th:if="${@currentUser.isAdmin()}">
             <form th:action="@{'/series/remove-actor/' + ${seriesById.id} + '/' + ${a.id}}" method="post" style="display:inline;">
-              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+              <button class="delete-button-reply">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-trash" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                </svg>
+              </button>
             </form>
           </div>
         </div>
@@ -113,9 +125,11 @@
       <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addActorModal">Add Actors</button>
       <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}"  th:data-movie-id="${seriesById.id}"  data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
 
+      <br>
       <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/series/delete/' + ${seriesById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this TV Series?');">
-        <button type="submit" class="btn btn-danger">Delete TV Series</button>
+        <button class="btn btn-danger">Delete TV Series</button>
       </form>
+
     </div>
     <div class="container-similar">
     <div th:if="${not #lists.isEmpty(similarSeries)}">
@@ -185,9 +199,6 @@
             <button type="submit" class="btn text-white">Rate</button>
           </form>
 
-<!--          <form id="delete-rating-form" th:action="@{'/series/delete-series-rating/' + ${seriesById.id}}" method="post">-->
-<!--            <button type="submit" class="btn text-white">Delete Rating</button>-->
-<!--          </form>-->
         </div>
       </div>
     </div>
@@ -214,9 +225,6 @@
 
           <label for="rating">Rating:</label><br>
           <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" th:value="${seriesById.rating}"><br>
-
-<!--          <label for="imageURL">Image URL:</label><br>-->
-<!--          <input type="text" id="imageURL" name="imageURL" th:value="${seriesById.imageURL}"><br>-->
 
           <label for="file">Image:</label><br>
           <input type="file" id="file" name="file" />
@@ -266,13 +274,95 @@
         <h5 class="modal-title">Add Category</h5>
       </div>
       <div class="modal-body">
-        <form th:action="@{/series/add-category}" method="post">
-          <label for="categoryName">Category</label>
-          <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+        <form th:action="@{/series/add-categories}" method="post">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="action" name="categoryNames" value="Action">
+            <label class="form-check-label" for="action">Action</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="adventure" name="categoryNames" value="Adventure">
+            <label class="form-check-label" for="adventure">Adventure</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="animation" name="categoryNames" value="Animation">
+            <label class="form-check-label" for="animation">Animation</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="biography" name="categoryNames" value="Biography">
+            <label class="form-check-label" for="biography">Biography</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="comedy" name="categoryNames" value="Comedy">
+            <label class="form-check-label" for="comedy">Comedy</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="crime" name="categoryNames" value="Crime">
+            <label class="form-check-label" for="crime">Crime</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="documentary" name="categoryNames" value="Documentary">
+            <label class="form-check-label" for="documentary">Documentary</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="drama" name="categoryNames" value="Drama">
+            <label class="form-check-label" for="drama">Drama</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="family" name="categoryNames" value="Family">
+            <label class="form-check-label" for="family">Family</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="fantasy" name="categoryNames" value="Fantasy">
+            <label class="form-check-label" for="fantasy">Fantasy</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="history" name="categoryNames" value="History">
+            <label class="form-check-label" for="history">History</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="horror" name="categoryNames" value="Horror">
+            <label class="form-check-label" for="horror">Horror</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="musical" name="categoryNames" value="Musical">
+            <label class="form-check-label" for="musical">Musical</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="mystery" name="categoryNames" value="Mystery">
+            <label class="form-check-label" for="mystery">Mystery</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="news" name="categoryNames" value="News">
+            <label class="form-check-label" for="news">News</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="romance" name="categoryNames" value="Romance">
+            <label class="form-check-label" for="romance">Romance</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="sci-fi" name="categoryNames" value="Sci-Fi">
+            <label class="form-check-label" for="sci-fi">Sci-Fi</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="sport" name="categoryNames" value="Sport">
+            <label class="form-check-label" for="sport">Sport</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="thriller" name="categoryNames" value="Thriller">
+            <label class="form-check-label" for="thriller">Thriller</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="war" name="categoryNames" value="War">
+            <label class="form-check-label" for="war">War</label>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="western" name="categoryNames" value="Western">
+            <label class="form-check-label" for="western">Western</label>
+          </div>
 
           <input type="hidden" th:value="${seriesById.id}" name="seriesId">
 
-          <input type="submit" value="Add Category">
+          <input type="submit" value="Add Categories">
         </form>
       </div>
     </div>

@@ -102,10 +102,6 @@ public class MoviesController {
         List<Director> allDirectors = directorService.findAll();
         model.addAttribute("allDirectors", allDirectors);
 
-//        User user = userService.getCurrentUserEntity();
-//        boolean isInWatchlist = moviesService.isMovieInWatchlist(user, id);
-//        model.addAttribute("isInWatchlist", isInWatchlist);
-
         return "movie-details";
     }
 
@@ -128,7 +124,7 @@ public class MoviesController {
 
         moviesService.removeRating(id, user);
 
-        return "redirect:/";
+        return "redirect:/profile/ratings";
     }
 
     @PostMapping("/add/{movieId}")
@@ -185,6 +181,7 @@ public class MoviesController {
                            @RequestParam("description") String description,
                            @RequestParam("directorId") Long directorId) throws IOException {
         moviesService.saveMovies(title, date, rating, file, videoURL, description, directorId);
+
         return "redirect:/movies/add-form";
     }
 
@@ -242,16 +239,27 @@ public class MoviesController {
         return "redirect:/movies/" + movieId;
     }
 
-    @PostMapping("/add-category")
-    public String addCategoryToMovie(@RequestParam("movieId") Long movieId, @RequestParam("categoryName") String categoryName) {
-        Category category = categoryService.findByName(categoryName);
-        if (category == null) {
-            category = new Category();
-            category.setCategoryName(categoryName);
-            categoryService.save(category);
+    @PostMapping("/add-categories")
+    public String addCategoriesToMovie(@RequestParam("categoryNames") List<String> categoryNames,
+                                       @RequestParam("movieId") Long movieId) {
+        Movie movie = moviesService.findById(movieId);
+        if (movie == null) {
+            // Обработка на грешка: филмът не беше намерен
+            return "redirect:/error";
         }
 
-        movieCategoryService.addCategoryToMovie(movieId, category.getId());
+        for (String categoryName : categoryNames) {
+            Category category = categoryService.findByName(categoryName);
+            if (category == null) {
+                category = new Category();
+                category.setCategoryName(categoryName);
+                categoryService.save(category);
+            }
+
+            // Добавяне на категорията към филма
+            movieCategoryService.addCategoryToMovie(movieId, category.getId());
+        }
+
         return "redirect:/movies/" + movieId;
     }
 

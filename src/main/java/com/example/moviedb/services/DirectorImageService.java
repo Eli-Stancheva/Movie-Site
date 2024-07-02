@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface DirectorImageService {
     void saveGalleryImages(List<MultipartFile> files, Director director) throws IOException;
+    void deleteDirectorGalleryImage(Long directorId, Long imageId);
+    void addDirectorGalleryImages(Long directorId, MultipartFile[] images);
 }

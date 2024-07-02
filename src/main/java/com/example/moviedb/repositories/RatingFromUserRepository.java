@@ -13,4 +13,5 @@ public interface RatingFromUserRepository extends JpaRepository<RatingFromUser, 
     List<RatingFromUser> findByMovieId(Long movieId);
     List<RatingFromUser> findByUser(User user);
     void deleteByUserId(Long userId);
+    void deleteByMovieId(Long movieId);
 }

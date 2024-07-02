@@ -13,60 +13,80 @@
     <div th:replace="~{fragments/navigation :: navigation}"></div>
 </div>
 
+<div class="container">
+    <div th:each="watchlist : ${watchlist}">
+        <br>
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 th:text="'Watchlist name: ' + ${watchlist.name}">Watchlist Name</h2>
+            <form th:action="@{'/watchlist/delete/' + ${watchlist.id}}" method="post" class="ml-3" onsubmit="return confirm('Are you sure you want to remove this watchlist?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </div>
+        <br>
 
-<div th:each="watchlist : ${watchlist}">
-    <h2 th:text="${watchlist.name}">Watchlist Name</h2>
+        <form action="#" th:action="@{'/watchlist/' + ${watchlist.id} + '/addItem'}" method="post">
+            <div class="form-group">
+                <h3><label for="itemName">Add Movie or Series by Name:</label></h3>
+                <input type="text" id="itemName" name="itemName" class="form-control" required>
+            </div>
 
-    <form action="#" th:action="@{'/watchlist/' + ${watchlist.id} + '/addItem'}" method="post">
-        <label for="itemName">Add Movie or Series by Name:</label>
-        <input type="text" id="itemName" name="itemName" required>
-        <button type="submit">Add</button>
-    </form>
+            <button type="submit" class="add-to-watchlist-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0z"/>
+                    <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                </svg>
+                Add to Watchlist
+                <div class="arrow">›</div>
+            </button>
+        </form><br>
 
-    <div class="row">
-        <div class="col-md-2 mb-4" th:each="movie : ${watchlist.movies}">
-            <div class="card">
-                <a th:href="@{'/movies/' + ${movie.id}}">
-                    <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
-                </a>
-                <div class="card-body">
-                    <p class="card-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
-                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                        </svg>
-                        <span class="rating-text" th:text="${movie.rating}"></span>
-                    </p>
-
-                    <form th:action="@{'/watchlist/' + ${watchlist.id} + '/movies/' + ${movie.id} + '/delete'}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-
-                    <h5 class="card-title" th:text="${movie.title}"></h5>
-
+        <div class="row">
+            <div class="col-md-2 mb-4" th:each="movie : ${watchlist.movies}">
+                <div class="card">
+                    <a th:href="@{'/movies/' + ${movie.id}}">
+                        <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                    </a>
+                    <div class="card-body">
+                        <div class="card-text-watchlist d-flex justify-content-between align-items-center">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <span class="rating-text" th:text="${movie.rating}"></span>
+                            </div>
+                            <form th:action="@{'/watchlist/' + ${watchlist.id} + '/movies/' + ${movie.id} + '/delete'}" method="post" onsubmit="return confirm('Are you sure you want to remove this movie?');">
+                                <button class="btn btn-danger btn-sm" type="submit">Remove</button>
+                            </form>
+                        </div>
+                        <h5 class="card-title" th:text="${movie.title}" style="margin-top: 20px"></h5>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-2 mb-4" th:each="s : ${watchlist.series}">
-            <div class="card">
-                <a th:href="@{'/series/' + ${s.id}}">
-                    <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
-                </a>
-                <div class="card-body">
-                    <p class="card-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
-                            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
-                        </svg>
-                        <span class="rating-text" th:text="${s.rating}"></span>
-                    </p>
-                    <form th:action="@{'/watchlist/' + ${watchlist.id} + '/series/' + ${s.id} + '/delete'}" method="post">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                    <h5 class="card-title" th:text="${s.title}"></h5>
+            <div class="col-md-2 mb-4" th:each="s : ${watchlist.series}">
+                <div class="card">
+                    <a th:href="@{'/series/' + ${s.id}}">
+                        <img th:src="@{'/uploads/' + ${s.imageURL}}" class="card-img-top" alt="Movie Image">
+                    </a>
+                    <div class="card-body">
+                        <div class="card-text-watchlist d-flex justify-content-between align-items-center">
+                            <div>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff6600" class="bi bi-star-fill" viewBox="0 0 16 16">
+                                    <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                </svg>
+                                <span class="rating-text" th:text="${s.rating}"></span>
+                            </div>
+                            <form th:action="@{'/watchlist/' + ${watchlist.id} + '/series/' + ${s.id} + '/delete'}" method="post" onsubmit="return confirm('Are you sure you want to remove this tv series?');">
+                                <button class="btn btn-danger btn-sm" type="submit">Remove</button>
+                            </form>
+                        </div>
+                        <h5 class="card-title" th:text="${s.title}" style="margin-top: 20px"></h5>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 </body>
 </html>

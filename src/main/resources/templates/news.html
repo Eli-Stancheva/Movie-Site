@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
@@ -13,31 +14,27 @@
   <div th:replace="~{fragments/navigation :: navigation}"></div>
 </div>
 
-
-
-
-<!--th:style="'background-image: url(/uploads/' + ${n.image} + ');'"-->
-<!--<img th:src="@{'/uploads/' + ${n.image}}" class="card-img-top">-->
-
 <div class="container">
   <br><h1>News</h1><br>
 
   <div class="news-container" >
     <div th:each="n : ${news}">
+      <div class="news-card">
+        <img th:src="@{'/uploads/' + ${n.image}}" class="news-card-img-top">
+        <b></b>
+        <div class="news-content">
+          <p class="text-title-news" th:text="${n.newsTitle}">Card title<br>
 
-      <div class="card-news">
-
-        <div class="card-background"></div>
-
-        <div class="card-details-news">
-          <p class="text-title-news" th:text="${n.newsTitle}">Card title</p>
+          </p>
+          <div class="sci">
+            <a th:href="@{'/news/' + ${n.id}}" class="card-button-news">More info</a>
+          </div>
         </div>
-        <button class="card-button-news">More info</button>
       </div>
-
     </div>
   </div>
 </div>
+
 
 <div>
   <footer th:replace="~{fragments/footer :: footer}"></footer>

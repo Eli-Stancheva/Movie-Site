@@ -19,8 +19,7 @@ public class DirectorImage {
     public DirectorImage() {
     }
 
-    public DirectorImage(Long id, String image, Director director) {
-        this.id = id;
+    public DirectorImage(String image, Director director) {
         this.image = image;
         this.director = director;
     }

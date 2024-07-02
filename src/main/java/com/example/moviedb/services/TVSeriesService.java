@@ -15,6 +15,7 @@ import java.util.Optional;
 public interface TVSeriesService {
     List<TVSeriesDTO> getTVSeries();
     Optional<TVSeries> findByName(String name);
+    TVSeries findById(Long seriesId);
     List<TVSeriesDTO> getTopRatedSeriesLimited();
     TVSeriesDTO convertToDto(TVSeries series);
     List<TVSeriesDTO> searchSeriesIgnoreCase(String query);

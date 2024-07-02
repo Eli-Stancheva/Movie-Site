@@ -21,8 +21,4 @@ public interface UserService {
     List<User> findAllUsers();
     CurrentUser getCurrentUser();
     void deleteUser(Long id);
-
-
-    //void addToWatchlist(String username, Movie movie);
-    //User getCurrentUserEntity();
 }

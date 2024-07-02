@@ -119,7 +119,7 @@ public class TVSeriesController {
 
         tvSeriesService.removeSeriesRating(id, user);
 
-        return "redirect:/";
+        return "redirect:/profile/ratings";
     }
 
     @PostMapping("/add/{seriesId}")
@@ -163,23 +163,6 @@ public class TVSeriesController {
         model.addAttribute("allDirectors", allDirectors);
         return "add-series";
     }
-
-//    @PostMapping("/add")
-//    public String addSeries(@ModelAttribute TVSeriesDTO seriesDTO, @RequestParam Long directorId, Model model) {
-//        tvSeriesService.addSeries(seriesDTO.getTitle(),
-//                seriesDTO.getReleaseDate(),
-//                seriesDTO.getSeasons(),
-//                seriesDTO.getRating(),
-//                seriesDTO.getImageURL(),
-//                seriesDTO.getVideoURL(),
-//                seriesDTO.getDescription(),
-//                directorId);
-//
-//        model.addAttribute("successMessage", "Successfully added!");
-//
-//        return "add-series";
-//    }
-
 
     @PostMapping("/add")
     public String addSeries(@RequestParam("title") String title,
@@ -251,16 +234,38 @@ public class TVSeriesController {
         return "redirect:/series/" + seriesId;
     }
 
-    @PostMapping("/add-category")
-    public String addCategoryToSeries(@RequestParam("seriesId") Long seriesId, @RequestParam("categoryName") String categoryName) {
-        Category category = categoryService.findByName(categoryName);
-        if (category == null) {
-            category = new Category();
-            category.setCategoryName(categoryName);
-            categoryService.save(category);
+//    @PostMapping("/add-category")
+//    public String addCategoryToSeries(@RequestParam("seriesId") Long seriesId, @RequestParam("categoryName") String categoryName) {
+//        Category category = categoryService.findByName(categoryName);
+//        if (category == null) {
+//            category = new Category();
+//            category.setCategoryName(categoryName);
+//            categoryService.save(category);
+//        }
+//
+//        tvSeriesCategoryService.addCategoryToSeries(seriesId, category.getId());
+//        return "redirect:/series/" + seriesId;
+//    }
+    @PostMapping("/add-categories")
+    public String addCategoryToSeries(@RequestParam("categoryNames") List<String> categoryNames,
+                                       @RequestParam("seriesId") Long seriesId) {
+        TVSeries series = tvSeriesService.findById(seriesId);
+        if (series == null) {
+            return "redirect:/error";
         }
 
-        tvSeriesCategoryService.addCategoryToSeries(seriesId, category.getId());
+        for (String categoryName : categoryNames) {
+            Category category = categoryService.findByName(categoryName);
+            if (category == null) {
+                category = new Category();
+                category.setCategoryName(categoryName);
+                categoryService.save(category);
+            }
+
+            // Добавяне на категорията към филма
+            tvSeriesCategoryService.addCategoryToSeries(seriesId, category.getId());
+        }
+
         return "redirect:/series/" + seriesId;
     }
 

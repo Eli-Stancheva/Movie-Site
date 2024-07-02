@@ -10,37 +10,43 @@
     <div class="media-list">
         <ul>
             <li th:each="movie : ${userMovieRatings}">
-        <div class="m-info">
-            <div>
-                <img th:src="@{'/uploads/' + ${movie.imageURL}}" style="height: 200px; width: 150px; border-radius: 5px;">
-            </div>
-            <div class="actor-details">
-                <h3 class="m-0" th:text="${movie.title}"></h3>
-                Your Rating: <span th:text="${movie.rating}"></span>
-                <a class="see-more-button" th:href="@{'/movies/' + ${movie.id}}">See More</a>
-                <form id="delete-rating-form-movie" th:action="@{'/movies/delete-rating/' + ${movie.id}}" method="post">
-                    <button type="submit" class="see-more-button">Delete Rating</button>
-                </form>
-            </div>
-        </div><br>
+            <div class="m-info">
+                <div>
+                    <img th:src="@{'/uploads/' + ${movie.imageURL}}" style="height: 200px; width: 150px; border-radius: 5px;">
+                </div>
+                <div class="actor-details">
+                    <h3 class="m-0" th:text="${movie.title}"></h3><br>
+
+                    <p>Your Rating: <span th:text="${movie.rating}"></span> / 10</p>
+
+                    <form id="delete-rating-form-movie" th:action="@{'/movies/delete-rating/' + ${movie.id}}" method="post" style="margin-left: 10px" onsubmit="return confirm('Are you sure you want to remove your rating?');">
+                        <button type="submit" class="btn btn-danger">Delete Rating</button>
+                    </form> <br><br>
+
+                    <div class="category">
+                        <a th:href="@{'/movies/' + ${movie.id}}" class="category-name see-more">See more</a>
+                    </div>
+                </div>
+            </div><br>
             </li>
-        </ul>
-    </div>
-    <hr>
-    <div class="media-list">
-        <ul>
+
             <li th:each="series : ${userSeriesRatings}">
                 <div class="m-info">
                     <div>
                         <img th:src="@{'/uploads/' + ${series.imageURL}}" style="height: 200px; width: 150px; border-radius: 5px;">
                     </div>
                     <div class="actor-details">
-                        <h3 class="m-0" th:text="${series.title}"></h3>
-                        <p th:text="${series.rating}">Your Rating:</p>
-                        <a class="see-more-button" th:href="@{'/series/' + ${series.id}}">See More</a>
-                        <form id="delete-rating-form" th:action="@{'/series/delete-series-rating/' + ${series.id}}" method="post">
-                            <button type="submit" class="see-more-button">Delete Rating</button>
-                        </form>
+                        <h3 class="m-0" th:text="${series.title}"></h3><br>
+
+                        <p>Your Rating: <span th:text="${series.rating}"></span> / 10</p>
+
+                        <form id="delete-rating-form" th:action="@{'/series/delete-series-rating/' + ${series.id}}" method="post"  style="margin-left: 10px" onsubmit="return confirm('Are you sure you want to remove your rating?');">
+                            <button type="submit" class="btn btn-danger">Delete Rating</button>
+                        </form><br><br>
+
+                        <div class="category">
+                            <a th:href="@{'/series/' + ${series.id}}" class="category-name see-more">See more</a>
+                        </div>
                     </div>
                 </div><br>
             </li>

@@ -8,34 +8,43 @@
 
 <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
 
-<h1>Add Movie</h1>
+<br><br>
+<div class="jumbotron-admin">
+  <div class="card">
+    <div class="card-header">
+      <h3>Add Movie</h3>
+    </div>
+    <div class="card-body">
+      <form th:action="@{'/movies/add'}" method="post" enctype="multipart/form-data">
+        <label for="title">Title:</label><br>
+        <input type="text" id="title" name="title" required><br>
 
-<form th:action="@{'/movies/add'}" method="post" enctype="multipart/form-data">
-  <label for="title">Title:</label><br>
-  <input type="text" id="title" name="title" required><br>
+        <label for="releaseDate">Release Date:</label><br>
+        <input type="date" id="releaseDate" name="releaseDate" required><br>
 
-  <label for="releaseDate">Release Date:</label><br>
-  <input type="date" id="releaseDate" name="releaseDate" required><br>
+        <label for="rating">Rating:</label><br>
+        <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" required><br>
 
-  <label for="rating">Rating:</label><br>
-  <input type="number" id="rating" name="rating" min="1" max="10" step="0.1" required><br>
+        <label for="imageURL">Image:</label>
+        <input type="file" id="imageURL" name="imageURL" required><br>
 
-  <label for="imageURL">Image:</label>
-  <input type="file" id="imageURL" name="imageURL" required><br>
+        <label for="videoURL">Video URL:</label><br>
+        <input type="text" id="videoURL" name="videoURL" required><br>
 
-  <label for="videoURL">Video URL:</label><br>
-  <input type="text" id="videoURL" name="videoURL" required><br>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br>
 
-  <label for="description">Description:</label><br>
-  <textarea id="description" name="description" required></textarea><br>
+        <label for="director">Director: </label>
+        <select id="director" name="directorId" class="form-control" required>
+          <option value="" disabled selected hidden>Please select a director.</option>
+          <option th:each="director : ${allDirectors}" th:value="${director.id}" th:text="${director.directorName}"></option>
+        </select><br>
 
-  <label for="director">Director: </label>
-  <select id="director" name="directorId" class="form-control" required>
-    <option value="" disabled selected hidden>Please select a director.</option>
-    <option th:each="director : ${allDirectors}" th:value="${director.id}" th:text="${director.directorName}"></option>
-  </select><br>
-  <input type="submit" value="Add">
-</form>
-
+        <input type="submit" value="Add">
+      </form>
+    </div>
+  </div>
+</div>
+<br><br>
 </body>
 </html>

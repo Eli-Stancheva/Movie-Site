@@ -16,36 +16,30 @@
 
 
 <div class="container">
-    <div class="actor-img">
-        <img th:src="@{'/uploads/' + ${actorById.actorImg}}" style="height: 400px; width: 300px; " alt="Image">
+    <div class="director-info">
+        <div class="actor-img">
+        <img th:src="@{'/uploads/' + ${actorById.actorImg}}" style="height: 250px; width: 200px; border-radius: 5px;" alt="Image">
     </div>
-    <h1 th:text="${actorById.actorName}"></h1>
+        <div class="director-details">
+            <h1 th:text="${actorById.actorName}"></h1>
+            <p th:text="${actorById.actorBirthdate}"></p>
+        </div>
+    </div>
     <h2>Biography</h2>
-    <p th:text="${actorById.actorBirthdate}"></p>
     <p th:text="${actorById.actorBiography}" class="bio-info"></p>
+
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
     <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/actors/delete/' + ${actorById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this Actor?');">
         <button type="submit" class="btn btn-danger">Delete Actor</button>
     </form>
 
-    <div class="gallery">
-        <h2>Gallery</h2>
-        <div class="row">
-            <div class="col-md-3 mb-4" th:each="image : ${actorById.images}">
-                <div class="card">
-                    <img th:src="@{'/uploads/' + ${image.image}}" class="card-img-top" alt="Gallery Image">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container mt-5">
+    <div class="known-for-container">
         <h2>Known For</h2>
         <div class="row">
             <div class="col-md-2 mb-4" th:each="movie : ${actorMovies}">
                 <div class="card">
                     <a th:href="@{'/movies/' + ${movie.id}}">
-                        <img th:src="@{${movie.imageURL}}" class="card-img-top" alt="Movie Image">
+                        <img th:src="@{'/uploads/' + ${movie.imageURL}}" class="card-img-top" alt="Movie Image">
                     </a>
                     <div class="card-body">
                         <p class="card-text">
@@ -63,7 +57,7 @@
         <div class="row">
             <div class="col-md-2 mb-4" th:each="s : ${actorSeries}">
                 <div class="card">
-                    <a th:href="@{'/series/' + ${s.id}}">
+                    <a th:src="@{'/uploads/' + ${s.imageURL}}">
                         <img th:src="@{${s.imageURL}}" class="card-img-top" alt="Movie Image">
                     </a>
                     <div class="card-body">
@@ -77,37 +71,85 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <button th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" type="button" class="btn btn-primary"  data-toggle="modal" data-target="#addImagesForGallery">Add Images For Gallery</button>
+
+    <div class="gallery">
+        <h2>Gallery</h2>
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div th:each="image, iterStat : ${actorById.images}" th:class="${iterStat.index == 0} ? 'carousel-item active' : 'carousel-item'">
+                    <div class="d-block w-100 image-container">
+                        <img th:src="@{'/uploads/' + ${image.image}}"  class="d-block mx-auto" alt="Gallery Image">
+                        <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/actors/deleteGalleryImage/' + ${actorById.id} + '/' + ${image.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this image?');">
+                            <button type="submit" class="btn btn-danger">X</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </a>
+        </div>
     </div>
 </div>
 
 <div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Update Actor Information</h5>
-      </div>
-        <div class="modal-body">
-            <form th:action="@{/actors/update}" method="post" enctype="multipart/form-data">
-                <input type="hidden" id="id" name="id" th:value="${actorById.id}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Actor Information</h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/actors/update}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="id" name="id" th:value="${actorById.id}">
 
-                <label for="actorName">Name:</label><br>
-                <input type="text" id="actorName" name="actorName" th:value="${actorById.actorName}" required><br>
+                    <label for="actorName">Name:</label><br>
+                    <input type="text" id="actorName" name="actorName" th:value="${actorById.actorName}" required><br>
 
-                <label for="file">Image:</label><br>
-                <input type="file" id="file" name="file" />
+                    <label for="file">Image:</label><br>
+                    <input type="file" id="file" name="file" /><br>
 
-                <label for="actorBirthdate">Birthdate:</label><br>
-                <input type="date" id="actorBirthdate" name="actorBirthdate" th:value="${actorById.actorBirthdate}" required><br>
+                    <label for="actorBirthdate">Birthdate:</label><br>
+                    <input type="date" id="actorBirthdate" name="actorBirthdate" th:value="${actorById.actorBirthdate}" required><br>
 
-                <label for="actorBiography">Biography:</label><br>
-                <textarea id="actorBiography" name="actorBiography" th:text="${actorById.actorBiography}" required></textarea><br>
+                    <label for="actorBiography">Biography:</label><br>
+                    <textarea id="actorBiography" name="actorBiography" th:text="${actorById.actorBiography}" required></textarea><br>
 
-                <input type="submit" value="Update">
-            </form>
+                    <input type="submit" value="Update">
+                </form>
+            </div>
         </div>
     </div>
-  </div>
 </div>
+
+<div id="addImagesForGallery" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Images For Gallery</h5>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{'/actors/addGalleryImages/' + ${actorById.id}}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="images" class="col-form-label">Select Images:</label>
+                        <input type="file" id="images" name="images" multiple accept="image/*" class="form-control-file">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload Images</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 </div>
 </body>
 </html>

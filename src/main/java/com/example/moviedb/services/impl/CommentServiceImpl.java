@@ -4,6 +4,7 @@ import com.example.moviedb.models.DTOs.CommentDTO;
 import com.example.moviedb.models.entity.Comment;
 import com.example.moviedb.models.entity.News;
 import com.example.moviedb.models.entity.User;
+import com.example.moviedb.models.enums.RoleEnum;
 import com.example.moviedb.repositories.CommentRepository;
 import com.example.moviedb.repositories.NewsRepository;
 import com.example.moviedb.services.CommentService;
@@ -80,26 +81,45 @@ public class CommentServiceImpl implements CommentService {
         return commentDTOs;
     }
 
-    @Override
-    public boolean deleteComment(Long commentId, User user) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
+//    @Override
+//    public boolean deleteComment(Long commentId, User user) {
+//        Comment comment = commentRepository.findById(commentId).orElse(null);
+//
+//        if (comment != null && comment.getUser().getId().equals(user.getId())) {
+//            commentRepository.delete(comment);
+//            return true;
+//        } else if (user.getRole() != null && user.getRole().getName().equals("ADMIN")) {
+//            commentRepository.delete(comment);
+//            return true;
+//        }
+//
+//        if (comment != null && comment.getUser().getId().equals(user.getId()) || user.getRole().getName().equals("ADMIN")) {
+//            commentRepository.delete(comment);
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
-        if (comment != null && comment.getUser().getId().equals(user.getId())) {
-            commentRepository.delete(comment);
-            return true;
-        } else if (user.getRole() != null && user.getRole().getName().equals("ADMIN")) {
-            commentRepository.delete(comment);
-            return true;
+    @Override
+    public boolean deleteComment(Long commentId, Long userId, boolean isAdmin) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment == null) {
+            return false;
         }
 
-        if (comment != null && comment.getUser().getId().equals(user.getId()) || user.getRole().getName().equals("ADMIN")) {
+        User user = comment.getUser();
+        if (user == null || user.getRole() == null || user.getRole().getName() == null) {
+            throw new IllegalStateException("User role is not properly set for user ID: " + userId);
+        }
+
+        if (isAdmin || user.getId().equals(userId)) {
             commentRepository.delete(comment);
             return true;
         }
 
         return false;
     }
-
 
     @Override
     public Comment findById(Long commentId) {
@@ -111,4 +131,9 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(reply);
     }
 
+    @Override
+    public boolean isCommentAuthor(Long commentId, Long userId) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        return comment != null && comment.getUser().getId().equals(userId);
+    }
 }

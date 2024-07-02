@@ -12,6 +12,7 @@ import com.example.moviedb.services.WatchlistService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,11 @@ public class WatchlistServiceImpl implements WatchlistService {
     public void addSeriesToWatchlist(Watchlist watchlist, TVSeries series) {
         watchlist.getSeries().add(series);
         watchlistRepository.save(watchlist);
+    }
+    @Transactional
+    @Override
+    public void deleteWatchlist(Long watchlistId, User user) {
+        watchlistRepository.deleteByIdAndUser(watchlistId, user);
     }
 
 

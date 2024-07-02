@@ -19,7 +19,9 @@
     <p th:text="${newsById.date}"></p>
     <p th:text="${newsById.newsContent}" class="bio-info"></p>
 
-    <img th:src="@{'/uploads/' + ${newsById.image}}" alt="Image">
+    <p style="text-align: center;">
+    <img th:src="@{'/uploads/' + ${newsById.image}}" style="height: 350px; width: 300px" alt="Image">
+    </p>
 
     <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>
     <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/news/delete/' + ${newsById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this News?');">
@@ -28,28 +30,67 @@
 
     <h2>Comments</h2>
     <div th:each="comment : ${commentsForNews}" class="comment-section">
-        <h5><strong th:text="${comment.user.username}">Username</strong></h5>
-        <h6 th:text="${comment.postDate}">Comment Date</h6>
-        <p th:text="${comment.comment}">Comment</p>
+        <div style="display: flex; align-items: center;">
+            <div>
+                <h5><strong th:text="${comment.user.username}">Username</strong></h5>
+                <h6 th:text="${comment.postDate}">Comment Date</h6>
+                <p th:text="${comment.comment}">Comment</p>
+            </div>
 
-        <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
-            <input type="hidden" name="newsId" th:value="${newsById.id}">
-            <button type="submit" class="btn btn-danger">Delete</button>
-        </form>
+<!--            <form th:if="${@currentUser.isLogged() and (@currentUser.isAdmin() or comment.user.username == @currentUser.getUsername())}" th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">-->
+<!--                <input type="hidden" name="newsId" th:value="${newsById.id}">-->
+<!--                <button class="delete-button">-->
+<!--                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash" viewBox="0 0 16 16">-->
+<!--                        <path fill-rule="evenodd" d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>-->
+<!--                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>-->
+<!--                    </svg>-->
+<!--                </button>-->
+<!--            </form>-->
+            <form th:if="${@currentUser.isLogged()} and (${@currentUser.isAdmin()} or ${comment.user.id} == ${@currentUser.getId()})"
+                  th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post"
+                  onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                <input type="hidden" name="newsId" th:value="${newsById.id}">
+                <button class="delete-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                    </svg>
+                </button>
+            </form>
 
 
+        </div>
         <form th:action="@{'/news/reply/' + ${comment.id}}" method="post" th:if="${@currentUser.isLogged()}">
-            <textarea name="replyContent" rows="2"></textarea>
-            <button type="submit" class="btn btn-primary">Reply</button>
+            <div style="display: flex; align-items: center;">
+                <textarea class="news-textarea" name="replyContent" rows="2" style="flex: 1;"></textarea>
+                <button type="submit" class="add-to-watchlist-button" style="width: 130px; margin-left: 10px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                    Reply
+                    <div class="arrow">›</div>
+                </button>
+            </div>
         </form>
+        <br>
 
         <div th:each="reply : ${comment.replies}" class="reply-section">
-            <h6><strong th:text="${reply.user.username}">Username</strong></h6>
-            <p th:text="${reply.comment}">Reply</p>
-            <form th:if="${@currentUser.isLogged() || @currentUser.isAdmin()}" th:action="@{'/news/delete-comment/' + ${reply.id}}" method="post">
-                <input type="hidden" name="newsId" th:value="${newsById.id}">
-                <button type="submit" class="btn btn-danger">Изтрий</button>
-            </form>
+            <div style="display: flex; align-items: center;">
+                <div>
+                    <h6><strong th:text="${reply.user.username}">Username</strong></h6>
+                    <p th:text="${reply.comment}">Reply</p>
+                </div>
+
+                <form th:if="${@currentUser.isLogged() and (@currentUser.isAdmin() or reply.user.username == @currentUser.getUsername())}" th:action="@{'/news/delete-comment/' + ${reply.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                    <input type="hidden" name="newsId" th:value="${newsById.id}">
+                    <button class="delete-button-reply">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
         </div>
         <hr>
     </div>
@@ -59,11 +100,18 @@
     <div th:if="${@currentUser.isLogged()} and ${!@currentUser.isAdmin()}">
         <form method="post" th:action="@{'/news/comments/' + ${newsById.id}}">
             <div class="comment-wrapper comment-section">
-                <textarea id="comment" name="comment" type="text" rows="4" cols="50"></textarea>
-                <button class="see-more-button" type="submit">Send</button>
+                <textarea class="news-textarea" id="comment" name="comment" type="text" rows="4" cols="50"></textarea>
+                <button type="submit" class="add-to-watchlist-button" style="width: 130px; margin-top: 40px">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-bar-right" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M6 8a.5.5 0 0 0 .5.5h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L12.293 7.5H6.5A.5.5 0 0 0 6 8m-2.5 7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5"/>
+                    </svg>
+                    Submit
+                    <div class="arrow">›</div>
+                </button>
             </div>
         </form>
     </div>
+
 </div>
 
 <div id="updateModal" class="modal fade" tabindex="-1" role="dialog">
@@ -99,99 +147,3 @@
 </div>
 </body>
 </html>
-
-
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
-
-<!--<head th:replace="~{fragments/head :: head}">-->
-<!--    <title>News Details</title>-->
-<!--</head>-->
-
-<!--<body>-->
-
-<!--<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">-->
-<!--    <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>-->
-<!--</div>-->
-<!--<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">-->
-<!--    <div th:replace="~{fragments/navigation :: navigation}"></div>-->
-<!--</div>-->
-
-<!--<div class="container">-->
-<!--    <br><h1 class="text-center" th:text="${newsById.newsTitle}"></h1><br>-->
-<!--    <p th:text="${newsById.date}"></p>-->
-<!--    <p th:text="${newsById.newsContent}" class="bio-info"></p>-->
-
-
-<!--    <img th:src="@{'/uploads/' + ${newsById.image}}" alt="Movie Image">-->
-
-<!--    <button type="button" class="btn btn-primary" th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" data-toggle="modal" data-target="#updateModal">Update Information</button>-->
-<!--    <form th:if="${@currentUser.isLogged()} and ${@currentUser.isAdmin()}" th:action="@{'/news/delete/' + ${newsById.id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this News?');">-->
-<!--        <button type="submit" class="btn btn-danger">Delete News</button>-->
-<!--    </form>-->
-
-<!--    <h2>Comments</h2>-->
-<!--    <div th:each="comment : ${commentsForNews}" class="comment-section">-->
-<!--        <h5><strong th:text="${comment.user.username}">Username</strong></h5>-->
-<!--        <h6 th:text="${comment.postDate}">Comment Date</h6>-->
-<!--        <p th:text="${comment.comment}">Comment</p>-->
-
-<!--        <form th:if="${@currentUser.isLogged() and @currentUser.id == comment.user.id}" th:action="@{'/news/delete-comment/' + ${comment.id}}" method="post">-->
-<!--            <input type="hidden" name="newsId" th:value="${newsById.id}">-->
-<!--            <button type="submit" class="btn btn-danger">Delete</button>-->
-<!--        </form>-->
-
-<!--        <form th:action="@{'/news/reply/' + ${comment.id}}" method="post" th:if="${@currentUser.isLogged()}">-->
-<!--            <textarea name="replyContent" rows="2"></textarea>-->
-<!--            <button type="submit" class="btn btn-primary">Reply</button>-->
-<!--        </form>-->
-
-<!--        <div th:each="reply : ${comment.replies}" class="reply-section">-->
-<!--            <h6><strong th:text="${reply.user.username}">Username</strong></h6>-->
-<!--            <p th:text="${reply.comment}">Reply</p>-->
-<!--        </div>-->
-<!--        <hr>-->
-<!--    </div>-->
-
-<!--    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>-->
-
-<!--    <div th:if="${@currentUser.isLogged()} and ${!@currentUser.isAdmin()}">-->
-<!--        <form method="post" th:action="@{'/news/comments/' + ${newsById.id}}">-->
-<!--            <div class="comment-wrapper comment-section">-->
-<!--                <textarea id="comment" name="comment" type="text" rows="4" cols="50"></textarea>-->
-<!--                <button class="see-more-button" type="submit">Send</button>-->
-<!--            </div>-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<div id="updateModal" class="modal fade" tabindex="-1" role="dialog">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <h5 class="modal-title">Update Director Information</h5>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                <form th:action="@{'/news/update'}" method="post">-->
-<!--                    <input type="hidden" id="id" name="id" th:value="${newsById.id}">-->
-
-<!--                    <label for="newsTitle">Title:</label><br>-->
-<!--                    <input type="text" id="newsTitle" name="newsTitle" th:value="${newsById.newsTitle}"><br>-->
-
-<!--                    <label for="newsContent">Biography:</label><br>-->
-<!--                    <textarea id="newsContent" name="newsContent" th:text="${newsById.newsContent}"></textarea><br>-->
-
-<!--                    <label for="date">Birthdate:</label><br>-->
-<!--                    <input type="date" id="date" name="date" th:value="${newsById.date}"><br>-->
-
-<!--                    <input type="submit" value="Update">-->
-<!--                </form>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-<!--<div>-->
-<!--    <footer th:replace="~{fragments/footer :: footer}"></footer>-->
-<!--</div>-->
-<!--</body>-->
-<!--</html>-->

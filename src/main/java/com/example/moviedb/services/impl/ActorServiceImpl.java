@@ -3,14 +3,24 @@ package com.example.moviedb.services.impl;
 import com.example.moviedb.models.DTOs.ActorDTO;
 import com.example.moviedb.models.DTOs.ActorImageDTO;
 import com.example.moviedb.models.entity.Actor;
+import com.example.moviedb.models.entity.Director;
 import com.example.moviedb.models.entity.Movie;
 import com.example.moviedb.models.entity.TVSeries;
 import com.example.moviedb.repositories.ActorRepository;
 import com.example.moviedb.services.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -20,7 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class ActorServiceImpl implements ActorService {
     private final ActorRepository actorRepository;
-
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     @Autowired
     public ActorServiceImpl(ActorRepository actorRepository) {
         this.actorRepository = actorRepository;
@@ -119,20 +130,6 @@ public class ActorServiceImpl implements ActorService {
     }
 
 
-//    @Override
-//    public Set<ActorDTO> getActors() {
-//        List<Actor> actors = actorRepository.findAll(); // Извличане на данни от базата данни
-//        return actors.stream()
-//                .map(actor -> new ActorDTO(
-//                        actor.getId(),
-//                        actor.getActorName(),
-//                        actor.getActorBirthdate(),
-//                        actor.getActorBiography(),
-//                        actor.getActorImg(),
-//                        images))
-//                .collect(Collectors.toSet());
-//    }
-
     @Override
     public Actor convertDtoToActor(ActorDTO actorDTO) {
         Actor actor = new Actor();
@@ -152,6 +149,21 @@ public class ActorServiceImpl implements ActorService {
     @Override
     public void save(Actor actor) {
         actorRepository.save(actor);
+    }
+
+    @Override
+    public Actor saveActors(String name, MultipartFile file, LocalDate date, String bio) throws IOException {
+        String fileName = file.getOriginalFilename();
+        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
+        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
+
+        Actor actor = new Actor();
+        actor.setActorName(name);
+        actor.setActorImg(fileName);
+        actor.setActorBirthdate(date);
+        actor.setActorBiography(bio);
+
+        return actorRepository.save(actor);
     }
 
     @Override

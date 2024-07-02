@@ -13,21 +13,6 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <ul class="navbar-nav">
-        <li class="nav-item active">
-          <a class="nav-link" th:href="@{/movies/add-form}">Add movies</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/series/add-form}">Add series</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/actors/add-form}">Add actors</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/directors/add-form}">Add director</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" th:href="@{/news/add-form}">Add news</a>
-        </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/actors/allActors}">Actors</a>
         </li>
@@ -45,6 +30,20 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" th:href="@{/admin-users}">Users</a>
+        </li>
+        <li class="nav-item">
+          <div class="form-inline my-2 my-lg-0">
+            <div class="logged-user dropdown">
+              <a class="nav-link dropdown-toggle text-black" href="#" id="navbarDropdown 1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add Functions</a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="nav-link" th:href="@{/movies/add-form}">Add movies</a>
+                <a class="nav-link" th:href="@{/series/add-form}">Add series</a>
+                <a class="nav-link" th:href="@{/actors/add-form}">Add actors</a>
+                <a class="nav-link" th:href="@{/directors/add-form}">Add director</a>
+                <a class="nav-link" th:href="@{/news/add-form}">Add news</a>
+              </div>
+            </div>
+          </div>
         </li>
         <li class="nav-item">
           <div class="form-inline my-2 my-lg-0">

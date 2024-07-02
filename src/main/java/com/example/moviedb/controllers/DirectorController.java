@@ -78,6 +78,18 @@ public class DirectorController {
         return "add-directors";
     }
 
+    @PostMapping("/addGalleryImages/{directorId}")
+    public String addActorGalleryImages(@PathVariable Long directorId, @RequestParam("images") MultipartFile[] images) {
+        directorImageService.addDirectorGalleryImages(directorId, images);
+        return "redirect:/directors/{directorId}";
+    }
+
+    @PostMapping("/deleteGalleryImage/{directorId}/{imageId}")
+    public String deleteActorGalleryImages(@PathVariable Long directorId, @PathVariable Long imageId) {
+        directorImageService.deleteDirectorGalleryImage(directorId, imageId);
+        return "redirect:/directors/{directorId}";
+    }
+
     @PostMapping("/add")
     public String addDirectors(@RequestParam("directorName") String name,
                                @RequestParam("directorImg") MultipartFile file,
@@ -85,11 +97,7 @@ public class DirectorController {
                                @RequestParam("directorBiography") String bio,
                                @RequestParam("images") List<MultipartFile> files) throws IOException {
 
-//        directorService.saveDirectors(name, file, date, bio);
-//        directorImageService.saveGalleryImages(files,director);
         Director director = directorService.saveDirectors(name, file, date, bio);
-
-        // Извикване на метод за запазване на галерията с изображения
         directorImageService.saveGalleryImages(files, director);
         return "redirect:/directors/add-form";
     }

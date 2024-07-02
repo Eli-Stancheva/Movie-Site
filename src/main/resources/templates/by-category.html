@@ -4,7 +4,12 @@
   <title th:text="${categoryName}">Movies By Category</title>
 </head>
 <body>
-<div th:replace="~{fragments/navigation :: navigation}"></div>
+<div th:if="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/adminNavigation :: adminNavigation}"></div>
+</div>
+<div th:unless="${@currentUser.isLogged() and @currentUser.isAdmin()}">
+  <div th:replace="~{fragments/navigation :: navigation}"></div>
+</div>
 <div class="container">
 
   <br><h1 th:text="${categoryName}"></h1><br>

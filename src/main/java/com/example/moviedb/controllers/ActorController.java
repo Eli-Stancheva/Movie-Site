@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -70,6 +71,17 @@ public class ActorController {
         return "add-actors";
     }
 
+    @PostMapping("/addGalleryImages/{actorId}")
+    public String addActorGalleryImages(@PathVariable Long actorId, @RequestParam("images") MultipartFile[] images) {
+        actorImageService.addActorGalleryImages(actorId, images);
+        return "redirect:/actors/{actorId}";
+    }
+
+    @PostMapping("/deleteGalleryImage/{actorId}/{imageId}")
+    public String deleteActorGalleryImages(@PathVariable Long actorId, @PathVariable Long imageId) {
+        actorImageService.deleteActorGalleryImage(actorId, imageId);
+        return "redirect:/actors/{actorId}";
+    }
 
     @PostMapping("/add")
     public String addActors(@RequestParam("actorName") String name,
@@ -78,26 +90,16 @@ public class ActorController {
                             @RequestParam("actorBiography") String bio,
                             @RequestParam("images") List<MultipartFile> files) throws IOException {
 
-        String fileName = file.getOriginalFilename();
-        Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
-        Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
-
-        Actor actor = new Actor();
-        actor.setActorName(name);
-        actor.setActorImg(fileName);
-        actor.setActorBirthdate(date);
-        actor.setActorBiography(bio);
-
-        actorService.save(actor);
+        Actor actor = actorService.saveActors(name, file, date, bio);
         actorImageService.saveGalleryImages(files, actor);
 
         return "redirect:/actors/add-form";
     }
 
     @PostMapping("/update")
-    public String updateActors(@ModelAttribute Actor updatedActor, @RequestParam("file") MultipartFile file) throws IOException {
+    public String updateActors(@ModelAttribute Actor updatedActor,
+                               @RequestParam("file") MultipartFile file) throws IOException {
         Long actorId = updatedActor.getId();
-
 
         ActorDTO actorDTO = actorService.getActorById(actorId);
         Actor existingActor = actorService.convertDtoToActor(actorDTO);
@@ -107,7 +109,6 @@ public class ActorController {
         existingActor.setActorBiography(updatedActor.getActorBiography());
 
         if (!file.isEmpty()) {
-
             String oldFileName = existingActor.getActorImg();
             if (oldFileName != null && !oldFileName.isEmpty()) {
                 fileStorageService.deleteFile(oldFileName);
@@ -124,6 +125,7 @@ public class ActorController {
 
         return "redirect:/actors/" + actorId;
     }
+
 
     @PostMapping("/delete/{id}")
     public String deleteActor(@PathVariable Long id, RedirectAttributes redirectAttributes) {

@@ -66,6 +66,12 @@ public class TVSeriesServiceImpl implements TVSeriesService {
     }
 
     @Override
+    public TVSeries findById(Long seriesId) {
+        return tvSeriesRepository.findById(seriesId)
+                .orElseThrow(() -> new RuntimeException("TV Series not found with id: " + seriesId));
+    }
+
+    @Override
     public List<TVSeriesDTO> getTopRatedSeriesLimited() {
         List<TVSeries> allSeries = tvSeriesRepository.findAll();
 

@@ -10,7 +10,12 @@
 }
 
 body{
-    background-image: linear-gradient(45deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(112.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(67.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),linear-gradient(90deg, rgb(24, 15, 143),rgb(170, 57, 157)); background-blend-mode:overlay,overlay,overlay,normal;
+    background-image:
+            linear-gradient(45deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),
+            linear-gradient(112.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),
+            linear-gradient(67.5deg, rgb(73, 160, 30) 0%, rgb(73, 160, 30) 6%,rgb(88, 141, 55) 6%, rgb(88, 141, 55) 11%,rgb(103, 122, 81) 11%, rgb(103, 122, 81) 55%,rgb(118, 103, 106) 55%, rgb(118, 103, 106) 81%,rgb(132, 84, 131) 81%, rgb(132, 84, 131) 83%,rgb(147, 65, 156) 83%, rgb(147, 65, 156) 92%,rgb(162, 46, 182) 92%, rgb(162, 46, 182) 95%,rgb(177, 27, 207) 95%, rgb(177, 27, 207) 100%),
+            linear-gradient(90deg, rgb(24, 15, 143),rgb(170, 57, 157)); background-blend-mode:overlay,overlay,overlay,normal;
+    background-size: cover;
     color: white;
     font-family: Georgia, fantasy;
 }
@@ -586,7 +591,6 @@ button.close span {
 
 .watchlist-btn{
     margin-left: auto; /* Aligns the watchlist button to the right */
-
 }
 
 .button-6 {
@@ -788,3 +792,246 @@ button.close span {
 }
 
 
+
+
+
+
+.director-info {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-top: 50px;
+}
+.director-info img {
+    margin-right: 20px;
+
+}
+.director-details {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+
+
+.carousel-item {
+    text-align: center;
+    background-color: black; /* черен фон */
+    overflow: hidden; /* скрива излишни части на изображението */
+}
+
+.carousel-item img {
+    max-height: 90vh; /* максимална височина до височината на прозореца */
+    max-width: 100%; /* съотношение на широчина */
+    margin: auto;
+}
+
+
+.known-for-container{
+    margin-top: 30px;
+    margin-right: 5px;
+}
+
+
+.form-group{
+    margin-bottom: 20px;
+}
+
+.form-group label{
+    margin-bottom: 10px;
+    margin-left: 5px;
+}
+
+.card-text-watchlist {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.jumbotron{
+    width: 500px;
+    align-items: center;
+    margin-left: 310px;
+}
+
+.jumbotron-admin{
+    width: 500px;
+    align-items: center;
+    margin-left: 400px;
+}
+
+
+
+
+.news-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px; /* Разстояние между картите */
+}
+
+.news-card-img-top{
+    height: 280px;
+    width: 234px;
+}
+
+.news-card {
+    position: relative;
+    width: 240px;
+    height: 304px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.news-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*background: linear-gradient(315deg,#03a9f4,#ff0058);*/
+}
+
+.news-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*background: linear-gradient(315deg,#03a9f4,#ff0058);*/
+    filter: blur(30px);
+}
+
+.news-card b {
+    position: absolute;
+    inset: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+.news-card img {
+    position: absolute;
+    z-index: 3;
+    scale: 0.8;
+    transition: 0.5s;
+}
+
+.news-card:hover img {
+    scale: 0.5;
+    opacity: 0.9;
+    transform: translateY(-70px);
+}
+
+.news-card .news-content {
+    position: absolute;
+    z-index: 3;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: scale(0);
+    transition: 0.5s;
+}
+
+.news-card:hover .news-content {
+    transform: scale(1);
+    bottom: 25px;
+}
+
+.news-content .text-title-news {
+    position: relative;
+    text-align: center;
+}
+
+.news-content .text-title-news span {
+    font-weight: 300;
+    font-size: 0.70em;
+}
+
+.news-content .sci {
+    position: relative;
+    margin-top: 5px;
+}
+
+.sci a {
+    position: relative;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.sci a:hover {
+    fill: currentColor;
+    color: rgba(255, 255, 255, 1);
+}
+
+.news-textarea{
+    opacity: 0.5;
+}
+
+
+
+.delete-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.delete-button svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: text-bottom;
+    fill: white;
+    margin-top: 45px;
+    margin-left: 10px;
+}
+
+.delete-button:hover svg {
+    fill: red; /* примерно може да променис цвета на иконата, когато пома с mouse over the button */
+}
+
+.delete-button-reply{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.delete-button-reply svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: text-bottom;
+    fill: white;
+    margin-top: 17px;
+    margin-left: 10px;
+}
+
+.delete-button-reply:hover svg {
+    fill: red; /* примерно може да променис цвета на иконата, когато пома с mouse over the button */
+}
+
+
+.delete-button-reply-admin{
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+.delete-button-reply-admin svg {
+    width: 1em;
+    height: 1em;
+    vertical-align: text-bottom;
+    fill: black;
+    margin-top: 17px;
+    margin-left: 22px;
+}
+
+.delete-button-reply-admin:hover svg {
+    fill: red; /* примерно може да променис цвета на иконата, когато пома с mouse over the button */
+}

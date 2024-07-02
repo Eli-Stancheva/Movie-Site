@@ -2,6 +2,7 @@ package com.example.moviedb.services.impl;
 
 import com.example.moviedb.models.DTOs.UserLoginDTO;
 import com.example.moviedb.models.DTOs.UserRegistrationDTO;
+import com.example.moviedb.models.enums.RoleEnum;
 import com.example.moviedb.repositories.*;
 import com.example.moviedb.services.EmailService;
 import com.example.moviedb.services.UserService;
@@ -123,11 +124,26 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
+
+
+
     @Override
     public void requestPasswordReset() {
         forgotPasswordRequested = true;
         resetCode = String.valueOf(random.nextInt(90000) + 10000);
     }
+
+    @Override
+    public void sendResetPasswordCode(String email) {
+        if (forgotPasswordRequested && resetCode != null) {
+            emailService.sendEmail(email, "Password Reset Code", "Your reset code is: " + resetCode);
+            updatePassword(email,resetCode);
+            forgotPasswordRequested = false;
+        } else {
+            throw new RuntimeException("The password reset code was not generated.");
+        }
+    }
+
     @Override
     public void updatePassword(String email, String newPassword) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -141,20 +157,11 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Потребителят с такъв email не съществува.");
         }
     }
-    @Override
-    public void sendResetPasswordCode(String email) {
 
-        if (forgotPasswordRequested && resetCode != null) {
-            emailService.sendEmail(email, "Password Reset Code", "Your reset code is: " + resetCode);
-            updatePassword(email,resetCode);
-            forgotPasswordRequested = false;
-        } else {
-            throw new RuntimeException("The password reset code was not generated.");
-        }
-    }
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findByRole_Name(RoleEnum.USER);
     }
 
     @Override
@@ -177,27 +184,4 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User not found");
         }
     }
-
-    //    @Override
-//    public void addToWatchlist(String username, Movie movie) {
-//        User user = userRepository.findByUsername(username)
-//                .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
-//
-//        WatchlistMovie watchlist = new WatchlistMovie();
-//        watchlist.setUser(user);
-//        watchlist.setMovie(movie);
-//
-//
-//        watchlistRepository.save(watchlist);
-//    }
-
-//    @Override
-//    public User getCurrentUserEntity() {
-//        Long userId = currentUser.getId();
-//        if (userId == null) {
-//            throw new IllegalArgumentException("Current user ID is null");
-//        }
-//        return userRepository.findById(userId)
-//                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
-//    }
 }

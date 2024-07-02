@@ -70,7 +70,6 @@ public class NewsController {
             return "redirect:/news/" + newsId;
         }
 
-
         CurrentUser currentUser = userService.getCurrentUser();
         Comment comment = new Comment();
         comment.setComment(commentText);
@@ -88,15 +87,31 @@ public class NewsController {
         return "redirect:/news/" + newsId;
     }
 
+//    @PostMapping("/delete-comment/{commentId}")
+//    public String deleteComment(@PathVariable Long commentId, @RequestParam Long newsId) {
+//        CurrentUser currentUser = userService.getCurrentUser();
+//
+//        if (currentUser.isLogged() || currentUser.isAdmin()) {
+//            User user = new User();
+//            user.setId(currentUser.getId());
+//
+//            boolean isDeleted = commentService.deleteComment(commentId, user);
+//            if (!isDeleted) {
+//                return "redirect:/news/" + newsId + "?error=not-authorized";
+//            }
+//        } else {
+//            return "redirect:/users/login";
+//        }
+//
+//        return "redirect:/news/" + newsId;
+//    }
+
     @PostMapping("/delete-comment/{commentId}")
     public String deleteComment(@PathVariable Long commentId, @RequestParam Long newsId) {
         CurrentUser currentUser = userService.getCurrentUser();
 
-        if (currentUser.isLogged() || currentUser.isAdmin()) {
-            User user = new User();
-            user.setId(currentUser.getId());
-
-            boolean isDeleted = commentService.deleteComment(commentId, user);
+        if (currentUser.isLogged() && (currentUser.isAdmin() || commentService.isCommentAuthor(commentId, currentUser.getId()))) {
+            boolean isDeleted = commentService.deleteComment(commentId, currentUser.getId(), currentUser.isAdmin());
             if (!isDeleted) {
                 return "redirect:/news/" + newsId + "?error=not-authorized";
             }
@@ -106,6 +121,7 @@ public class NewsController {
 
         return "redirect:/news/" + newsId;
     }
+
 
     @GetMapping("/{id}")
     public String getNewsDetails(Model model, @PathVariable Long id) {
@@ -147,22 +163,18 @@ public class NewsController {
         existingNews.setDate(updatedNews.getDate());
 
         if (!file.isEmpty()) {
-            // Изтриване на старото изображение, ако съществува
             String oldFileName = existingNews.getImageName();
             if (oldFileName != null && !oldFileName.isEmpty()) {
                 fileStorageService.deleteFile(oldFileName);
             }
 
-            // Запазване на новия файл
             String fileName = file.getOriginalFilename();
             Path copyLocation = Paths.get(uploadDir + File.separator + fileName);
             Files.copy(file.getInputStream(), copyLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            // Актуализиране на името на изображението в обекта
             existingNews.setImageName(fileName);
         }
 
-        // Запазване на актуализираните данни в базата
         newsService.updateNews(existingNews);
 
         return "redirect:/news/" + newsId;

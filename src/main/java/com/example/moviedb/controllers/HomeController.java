@@ -36,13 +36,9 @@ public class HomeController {
     @GetMapping
     public String getBestMoviesLimited(Model model) {
         List<MovieDTO> topRatedMovies = moviesService.getTopRatedMoviesLimited();
-
         MovieDTO newestMovies = moviesService.getNewestMovie();
-
         List<CategoryDTO> categories = categoryService.getCategories();
-
         List<TVSeriesDTO> topRatedSeries = tvSeriesService.getTopRatedSeriesLimited();
-
         CurrentUser currentUser = userService.getCurrentUser();
         List<Movie> watchlistMovie = moviesService.getAllWatchlistMoviesForUser(currentUser.getId());
 

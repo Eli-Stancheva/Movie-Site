@@ -25,14 +25,9 @@
       <td th:text="${user.email}">email@example.com</td>
       <td th:text="${user.role.name}">ROLE_USER</td>
       <td>
-<!--        <form th:action="@{'/admin-delete-user/' + ${user.id}}" method="post" style="display:inline;">-->
-<!--          <button type="submit" class="btn btn-danger btn-sm">Delete</button>-->
-<!--        </form>-->
-        <div th:if="${user.role.name != 'ADMIN'}">
-          <form th:action="@{'/admin-delete-user/' + ${user.id}}" method="post" style="display:inline;">
-            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-          </form>
-        </div>
+        <form th:action="@{'/admin-delete-user/' + ${user.id}}" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
       </td>
     </tr>
     </tbody>
